@@ -1,0 +1,62 @@
+<%- include('includes/header') %>
+
+    <h1>OpenTok Embed Appointment demo</h1>
+
+    <section>
+        <h2>Login</h2>
+        <form action="/user/login" method="POST">
+            <div>
+                <label>Username:
+                    <input type="text" autocomplete="off" name="username" maxlength="64" autofocus required>
+                </label>
+            </div>
+
+            <div>
+                <label>Password:
+                    <input type="password" autocomplete="off" name="password" maxlength="128" required>
+                </label>
+            </div>
+
+            <div>
+                <input type="submit" value="Login">
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Signup</h2>
+        <form action="/user/register" method="POST">
+            <div>
+                <label>Name:
+                    <input type="text" autocomplete="off" name="name" maxlength="64">
+                </label>
+            </div>
+
+            <div>
+                <label>Username:
+                    <input type="text" autocomplete="off" name="username" maxlength="64" required>
+                </label>
+            </div>
+
+            <div>
+                <label>Password:
+                    <input type="password" autocomplete="off" name="password" maxlength="128" required>
+                </label>
+            </div>
+
+            <div>
+                <label>Role:
+                    <select name="role" required>
+                        <option value="doctor">Doctor</option>
+                        <option value="patient">Patient</option>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <input type="submit" value="Register">
+            </div>
+        </form>
+    </section>
+
+    <%- include('includes/footer') %>

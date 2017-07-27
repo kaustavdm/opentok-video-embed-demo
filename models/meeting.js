@@ -6,8 +6,8 @@ module.exports = function (sequelize, DataTypes) {
   });
 
   Meeting.associate = function (models) {
-    Meeting.belongsTo(models.Doctor);
-    Meeting.belongsTo(models.Patient);
+    Meeting.Doctor = Meeting.belongsTo(models.Doctor);
+    Meeting.Patient = Meeting.belongsTo(models.Patient);
   };
 
   return Meeting;

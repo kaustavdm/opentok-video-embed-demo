@@ -55,7 +55,7 @@ module.exports = function (sequelize, DataTypes) {
     var values = Object.assign({}, this.get());
 
     delete values.password;
-    delete values.hash;
+    delete values.salt;
     return values;
   };
 

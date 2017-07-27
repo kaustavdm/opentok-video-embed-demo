@@ -1,15 +1,28 @@
+const models = require("../models");
+const debug = require('util').debuglog('app');
 
 const ensure_logged_in = (req, res, next) => {
   if (!(req.session.user && req.signedCookies.ot_embed_demo_sid)) {
     res.redirect('/');
   } else {
-    next();
+    models.User.findOne({
+      where: { id: req.session.user.id },
+      attributes: { exclude: ['password', 'salt']}
+    })
+      .then(u => {
+        res.locals.user = req.session.user;
+        req.User = u;
+        next();
+      })
+      .catch(err => {
+        next(err);
+      });
   }
 };
 
 const redirect_logged_in = (req, res, next) => {
   if (req.session.user && req.signedCookies.ot_embed_demo_sid) {
-    res.redirect('/user/dashboard');
+    res.redirect('/dashboard');
   } else {
     next();
   }

@@ -1,0 +1,17 @@
+<h1>Doctor Dashboard</h1>
+
+<ul>
+  <li>Name:
+    <%= user.name || '<i>N/A</i>' %></li>
+</ul>
+
+<h2>Upcoming meetings</h2>
+
+<% if (meetings.length > 0) { %>
+
+
+<% } else { %>
+
+  <p>You don't have any meetings yet. You can create one.</p>
+
+<% } %>

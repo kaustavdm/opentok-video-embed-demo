@@ -25,7 +25,7 @@ router.post('/login', helper.redirect_logged_in, (req, res) => {
       } else {
         // Succeeded
         req.session.user = user.toJSON();
-        res.redirect('/user/dashboard');
+        res.redirect('/dashboard');
       }
     })
 });
@@ -72,13 +72,14 @@ router.post('/register', helper.redirect_logged_in, (req, res) => {
   } else {
     // Invalid role
     res.redirect('/');
+    return;
   }
 
   user
     .then(u => {
       debug(`New ${role} user created: ${username}`);
       req.session.user = u.User.toJSON();
-      res.redirect('/user/dashboard');
+      res.redirect('/dashboard');
     })
     .catch(err => {
       debug(`Error creating ${role} user`, err.errors);
@@ -95,8 +96,5 @@ router.get('/logout', (req, res) => {
   }
 })
 
-router.get('/dashboard', helper.ensure_logged_in, (req, res) => {
-  res.send('Yo');
-});
 
 module.exports = router;

@@ -8,7 +8,13 @@
   "env": {
     "NODE_ENV": {
       "description": "Run as a production environment on Heroku",
-      "value": "production"
+      "value": "production",
+      "required": false
+    },
+    "NODE_DEBUG": {
+      "description": "Enable debug for modules",
+      "value": "app",
+      "required": false
     }
   },
   "formation": {},

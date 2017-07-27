@@ -12,6 +12,36 @@ section {
     background-color: #fafafa;
 }
 
+h1 {
+    font-size: 1.25rem;
+}
+
+h2 {
+    font-size: 1.125rem;
+}
+
+h3 {
+    font-size: 1rem;
+}
+
+h4 {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+nav > ul {
+    list-style: none;
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 0 0.25rem 0;
+    padding: 0 0 0.25rem 0;
+    border-bottom: 0.25rem solid #ccc;
+}
+
+nav > ul > li {
+    margin: 0 0.25rem;
+}
+
 form > div {
     margin: 0.5rem 0;
 }
@@ -19,4 +49,77 @@ form > div {
 input[type="submit"] {
     padding: 0.5rem 1rem;
     font-size: 1rem;
+}
+
+.meeting-strip {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+}
+
+.meeting-item {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    background-color: #e9fffe;
+    border: 1px solid #333;
+    align-items: stretch;
+}
+
+.meeting-strip.past .meeting-item {
+    background-color: #ffe9e9;
+}
+
+.meeting-strip .meeting-item.unclaimed {
+    border-color: #ccc;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.meeting-item > div {
+    margin: 0.25rem;
+}
+
+.meeting-item > .meeting-item-time {
+    flex-grow: 1;
+}
+
+.button, input[type="submit"], input[type="reset"] {
+    padding: 0.5rem;
+    display: inline-block;
+    background-color: #333;
+    color: #ccc;
+    text-decoration: none;
+    cursor: pointer;
+    outline: 0;
+    border: 2px solid #555;
+    transition: color 0.25s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.button.secondary {
+    background-color: #ccc;
+    border: 2px solid #fefefe;
+    color: #333;
+}
+
+.button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+    color: #fff;
+}
+
+.button.secondary:hover {
+    color: #000;
+}
+
+.button.disabled {
+    cursor: not-allowed;
+    background-color: #555;
+    color: #fafafa;
+}
+
+.button.secondary.disabled {
+    cursor: not-allowed;
+    background-color: #fafafa;
+    color: #555;
 }

@@ -28,7 +28,19 @@ const redirect_logged_in = (req, res, next) => {
   }
 }
 
+const check_role = (role) => {
+  return function (req, res, next) {
+    if (req.session.user && req.session.user.role === role) {
+      next();
+    } else {
+      res.redirect('/dashboard');
+    }
+  }
+}
+
+
 module.exports = {
   ensure_logged_in,
-  redirect_logged_in
+  redirect_logged_in,
+  check_role
 }

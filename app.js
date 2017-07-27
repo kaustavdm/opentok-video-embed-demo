@@ -38,6 +38,19 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+  // Add method for adding static assets
+  res.locals.assets = {
+    // JavaScripts. Relative to `./static/js`
+    scripts: [],
+    // CSS. Relative to `./static/css`
+    styles: ['ui.css']
+  }
+  // Add empty user object for views
+  res.locals.user = false;
+  next();
+});
+
+app.use((req, res, next) => {
   if (req.signedCookies.ot_embed_demo_sid && !req.session.user) {
     res.clearCookie('ot_embed_demo_sid');
   }
@@ -58,7 +71,9 @@ app.use(function (req, res, next) {
 // no stacktraces leaked to user unless in development environment
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
-  debug(err);
+  if (!err.status || err.status !== 404) {
+    debug(err);
+  }
   res.render('error', {
     message: err.message
   });

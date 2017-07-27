@@ -1,0 +1,26 @@
+<%- include('includes/header') %>
+
+<section>
+  <h2>Book meeting slots</h2>
+
+  <% if (meetings.length > 0) { %>
+    <% for (var m of meetings) { %>
+      <div class="meeting-item">
+        <div>Doctor: <%= m['Doctor.name'] %></div>
+        <div class="meeting-item-time">Time: <%= m.start_time %></div>
+        <div>
+          <form method="POST">
+            <input type="hidden" name="meeting_id" value="<%= m.id %>">
+            <input type="hidden" name="patient_id" value="<%= user.id %>">
+            <input type="submit" value="Book">
+          </form>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <p>No meeting slots are available now.</p>
+  <% } %>
+
+</section>
+
+<%- include('includes/footer') %>

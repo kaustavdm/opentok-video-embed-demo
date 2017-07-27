@@ -89,8 +89,10 @@ router.post('/register', helper.redirect_logged_in, (req, res) => {
 
 router.get('/logout', (req, res) => {
   if (req.session.user && req.signedCookies.ot_embed_demo_sid) {
-    res.clearCookie('ot_embed_demo_sid');
-    res.redirect('/');
+    req.session.destroy(() => {
+      res.clearCookie('ot_embed_demo_sid');
+      res.redirect('/');
+    });
   } else {
     res.redirect('/login');
   }

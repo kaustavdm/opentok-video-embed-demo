@@ -1,17 +1,68 @@
-<h1>Doctor Dashboard</h1>
+<%- include('includes/header') %>
+
+<h2>Doctor Dashboard</h2>
 
 <ul>
-  <li>Name:
-    <%= user.name || '<i>N/A</i>' %></li>
+  <li>Name: <%= user.name || '<i>N/A</i>' %></li>
 </ul>
 
-<h2>Upcoming meetings</h2>
+<div>
+  <a class="button" href="/meetings/create">Create meeting slots</a>
+</div>
 
-<% if (meetings.length > 0) { %>
+<h3>Upcoming meetings</h3>
 
+<% if (meetings.upcoming.length > 0) { %>
+  <div class="meeting-strip">
+    <% for (var m of meetings.upcoming) { %>
+      <% if (m.PatientId != null) { %>
+        <div class="meeting-item">
+          <div class="meeting-item-time"><%= m.start_time %></div>
+          <div class="meeting-item-info">Patient: <%= m['Patient.name'] %></div>
+          <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
+        </div>
+      <% } else { %>
+        <div class="meeting-item unclaimed">
+          <div class="meeting-item-time"><%= m.start_time %></div>
+          <div class="meeting-item-info">Patient: None</div>
+          <div><span class="button secondary disabled">Unclaimed</span></div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
 
 <% } else { %>
 
-  <p>You don't have any meetings yet. You can create one.</p>
+  <p>You don't have any upcoming. You can <a href="/meetings/create">create a meeting</a>.</p>
 
 <% } %>
+
+
+<h3>Past meetings</h3>
+
+<% if (meetings.past.length > 0) { %>
+  <div class="meeting-strip past">
+    <% for (var m of meetings.past) { %>
+      <% if (m.PatientId != null) { %>
+        <div class="meeting-item">
+          <div class="meeting-item-time"><%= m.start_time %></div>
+          <div class="meeting-item-info">Patient: <%= m['Patient.name'] %></div>
+          <div><span class="button disabled">Meeting Over</span></div>
+        </div>
+      <% } else { %>
+        <div class="meeting-item unclaimed">
+          <div class="meeting-item-time"><%= m.start_time %></div>
+          <div class="meeting-item-info">Patient: None</div>
+          <div><span class="button secondary disabled">Unclaimed</span></div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+
+<% } else { %>
+
+  <p>You don't have past meetings.</p>
+
+<% } %>
+
+<%- include('includes/footer') %>

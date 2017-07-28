@@ -57,4 +57,10 @@
         </form>
     </section>
 
+    <% if (!lock_setup) { %>
+      <div>
+        <a href="/setup" class="button secondary">Setup/Update embed code</a>
+      </div>
+    <% } %>
+
     <%- include('includes/footer') %>

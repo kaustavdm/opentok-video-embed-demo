@@ -10,7 +10,6 @@ const session = require('express-session');
 const { randomBytes } = require('crypto');
 
 const debug = require('util').debuglog('app');
-const routes = require('./routes');
 
 const secret = randomBytes(Math.ceil(32 / 2))
   .toString('hex')
@@ -58,7 +57,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, 'static')));
-app.use('/', routes);
+app.use('/', require('./routes'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

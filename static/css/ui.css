@@ -123,3 +123,19 @@ input[type="submit"] {
     background-color: #fafafa;
     color: #555;
 }
+
+textarea {
+    font-family: monospace;
+    font-size: 1rem;
+    padding: 1rem;
+    width: 75vw;
+}
+
+.hidden {
+    display: none;
+}
+
+iframe {
+    border: none;
+    outline: 0;
+}

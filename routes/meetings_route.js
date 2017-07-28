@@ -56,8 +56,39 @@ router.post('/create', helper.check_role('Doctor'), (req, res, next) => {
   .catch(next);
 });
 
-router.get('/join/:meeting_id', (req, res) => {
-  res.render('meeting');
+router.get('/join/:meeting_id', helper.ensure_logged_in, (req, res, next) => {
+  models.Meeting.findOne({
+    where: { id: req.params.meeting_id },
+    raw: true,
+    include: [{
+      model: models.Doctor,
+      attributes: ['id', 'name'],
+      include: [{
+        model: models.User,
+        attributes: ['id']
+      }]
+    }, {
+      model: models.Patient,
+      attributes: ['id', 'name'],
+      include: [{
+        model: models.User,
+        attributes: ['id']
+      }]
+    }]
+  })
+  .then(meeting => {
+    if (meeting == null) {
+      next();
+      return;
+    }
+    if (req.User.id !== meeting[`${req.User.role}.User.id`]) {
+      next();
+      return;
+    }
+    const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
+    res.render('meeting', { embed_code: embed_code, meeting: meeting });
+  })
+  .catch(next);
 });
 
 module.exports = router;

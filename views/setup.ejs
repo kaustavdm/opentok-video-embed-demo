@@ -1,0 +1,24 @@
+<%- include('includes/header') %>
+
+<section>
+  <h2>Setup OpenTok embed code</h2>
+
+  <p></p>
+
+  <form method="POST">
+
+    <div>
+      <p><label for="embed_code_value">Embed code</label></p>
+      <textarea id="embed_code_value" name="embed_code_value" rows="10" cols="20"
+        required autofocus><%= data %></textarea>
+    </div>
+
+    <div>
+      <input type="submit" value="Set up">
+      <a href="/" class="button secondary">Cancel</a>
+    </div>
+
+  </form>
+</section>
+
+<%- include('includes/footer') %>

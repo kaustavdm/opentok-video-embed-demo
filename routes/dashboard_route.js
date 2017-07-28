@@ -18,11 +18,13 @@ router.get('/', helper.ensure_logged_in, (req, res, next) => {
   };
   let m_filter = m => {
     const currtime = Date.now();
-    const upcoming = m.filter(i => i.start_time.getTime() >= currtime);
-    const past = m.filter(i => i.start_time.getTime() < currtime);
+    const current = m.filter(i => i.start_time.getTime() < currtime && i.end_time.getTime() >= currtime);
+    const upcoming = m.filter(i => i.end_time.getTime() >= currtime);
+    const past = m.filter(i => i.end_time.getTime() < currtime);
     return {
       upcoming: upcoming,
-      past: past
+      past: past,
+      current: current
     }
   };
 

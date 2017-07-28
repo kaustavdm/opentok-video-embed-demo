@@ -1,0 +1,42 @@
+<%- include('includes/header') %>
+
+<section>
+  <div id="message"></div>
+  <div id="ot_embed_demo_container" class="hidden"><%- embed_code %></div>
+</section>
+
+<section>
+  <h2>Meeting information</h2>
+  <dl>
+    <dt>Doctor</dt><dd><%= meeting['Doctor.name'] %></dd>
+    <dt>Patient</dt><dd><%= meeting['Patient.name'] %></dd>
+    <dt>Start time</dt><dd><%= meeting.start_time %></dd>
+    <dt>End time</dt><dd><%= meeting.end_time %></dd>
+  </dl>
+</section>
+
+<script>
+  window.addEventListener('load', function () {
+    var embed_container = document.getElementById('ot_embed_demo_container');
+    var message_container = document.getElementById('message');
+    var end_time = Date.parse("<%= meeting.end_time %>");
+    var time_left = end_time - Date.now();
+
+    if (time_left < 1) {
+      embed_container.parentNode.removeChild(embed_container);
+      message_container.innerHTML = '<p><strong>Meeting is over.</strong></p>\
+        <p><a href="/dashboard" class="button secondary">Back to Dashboard</a></p>';
+    } else {
+      embed_container.classList.remove('hidden');
+      setInterval(function () {
+        var remaining = Math.round((end_time - Date.now()) / 60000);
+        message_container.innerHTML = '<p><strong>Time remaining: ' + remaining + ' minute(s).</strong></p>';
+      }, 60000);
+      setTimeout(function () {
+        window.location.reload();
+      }, time_left);
+    }
+  });
+</script>
+
+<%- include('includes/footer') %>

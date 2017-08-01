@@ -4,10 +4,10 @@ const helper = require('./route_helper');
 
 router.get('/', helper.ensure_logged_in, (req, res, next) => {
   let u;
-  const qdate = new Date(Date.now() - (60000*60*24));
+
   let mopts_include = include_role => {
     return {
-      where: { start_time: { $gt: qdate }},
+      where: { end_time: { $gt: new Date() }},
       order: [['start_time', 'ASC']],
       raw: true,
       include: [{
@@ -16,15 +16,15 @@ router.get('/', helper.ensure_logged_in, (req, res, next) => {
       }]
     }
   };
+
   let m_filter = m => {
     const currtime = Date.now();
-    const current = m.filter(i => i.start_time.getTime() < currtime && i.end_time.getTime() >= currtime);
-    const upcoming = m.filter(i => i.end_time.getTime() >= currtime);
-    const past = m.filter(i => i.end_time.getTime() < currtime);
+
     return {
-      upcoming: upcoming,
-      past: past,
-      current: current
+      // Starting after 5 minutes
+      upcoming: m.filter(i => i.start_time.getTime() >= currtime + 300000 ),
+      // Starting in 5 minutes or has already started
+      current: m.filter(i => i.start_time.getTime() < currtime + 300000 && i.end_time.getTime() >= currtime)
     }
   };
 

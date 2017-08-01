@@ -1,66 +1,63 @@
 <%- include('includes/header') %>
 
-    <section>
-        <h2>Login</h2>
-        <form action="/user/login" method="POST">
-            <div>
-                <label>Username:
-                    <input type="text" autocomplete="off" name="username" maxlength="64" autofocus required>
-                </label>
-            </div>
+  <div class="row">
 
-            <div>
-                <label>Password:
-                    <input type="password" autocomplete="off" name="password" maxlength="128" required>
-                </label>
-            </div>
+    <section class="grow form-section">
+      <h2 class="text-center">Login</h2>
+      <form action="/user/login" method="POST">
+        <div>
+          <label for="login-username">Username</label>
+          <input id="login-username" type="text" autocomplete="off" name="username" maxlength="64" autofocus required>
+        </div>
 
-            <div>
-                <input type="submit" value="Login">
-            </div>
-        </form>
+        <div>
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" autocomplete="off" name="password" maxlength="128" required>
+        </div>
+
+        <div class="buttons">
+          <input type="submit" value="Login">
+        </div>
+      </form>
     </section>
 
-    <section>
-        <h2>Signup</h2>
-        <form action="/user/register" method="POST">
-            <div>
-                <label>Name:
-                    <input type="text" autocomplete="off" name="name" maxlength="64">
-                </label>
-            </div>
+    <section class="grow">
+      <h2 class="text-center">Signup</h2>
+      <form action="/user/register" method="POST">
+        <div>
+          <label for="register-name">Name</label>
+          <input id="register-name" type="text" autocomplete="off" name="name" maxlength="64">
+        </div>
 
-            <div>
-                <label>Username:
-                    <input type="text" autocomplete="off" name="username" maxlength="64" required>
-                </label>
-            </div>
+        <div>
+          <label for="register-username">Username</label>
+          <input id="register-username" type="text" autocomplete="off" name="username" maxlength="64" required>
+        </div>
 
-            <div>
-                <label>Password:
-                    <input type="password" autocomplete="off" name="password" maxlength="128" required>
-                </label>
-            </div>
+        <div>
+          <label for="register-password">Password</label>
+          <input id="register-password" type="password" autocomplete="off" name="password" maxlength="128" required>
+        </div>
 
-            <div>
-                <label>Role:
-                    <select name="role" required>
-                        <option value="doctor">Doctor</option>
-                        <option value="patient">Patient</option>
-                    </select>
-                </label>
-            </div>
+        <div>
+          <label for="register-role">Role</label>
+          <select id="register-role" name="role" required>
+            <option>-- Choose a role --</option>
+            <option value="doctor">Doctor</option>
+            <option value="patient">Patient</option>
+          </select>
+        </div>
 
-            <div>
-                <input type="submit" value="Register">
-            </div>
-        </form>
+        <div class="buttons">
+          <input type="submit" value="Register">
+        </div>
+      </form>
     </section>
+  </div>
 
-    <% if (!lock_setup) { %>
-      <div>
-        <a href="/setup" class="button secondary">Setup/Update embed code</a>
-      </div>
-    <% } %>
-
-    <%- include('includes/footer') %>
+  <% if (!lock_setup) { %>
+    <div>
+      <a href="/setup" class="button secondary">Setup/Update embed code</a>
+    </div>
+  <% } %>
+  <%- include('includes/footer') %>

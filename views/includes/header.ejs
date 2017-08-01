@@ -14,11 +14,11 @@
 </head>
 
 <body>
-  <div class="header">
+  <div class="container header">
     <h1>OpenTok Embed Appointment Demo</h1>
     <% if (user) { %>
       <nav role="main">
-        <ul>
+        <ul class="row">
           <li><strong><%= user.name || user.username %></strong> (<%= user.role %>)</li>
           <li><a href="/dashboard">Dashboard</a></li>
           <li><a href="/user/logout">Logout</a></li>
@@ -26,3 +26,4 @@
       </nav>
     <% } %>
   </div>
+  <div class="container">

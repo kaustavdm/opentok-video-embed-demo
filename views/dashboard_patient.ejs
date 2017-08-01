@@ -1,46 +1,38 @@
 <%- include('includes/header') %>
 
-<h1>Patient Dashboard</h1>
-
-<div>
-  <a class="button" href="/meetings/book">Book meeting slots</a>
+<div class="row">
+  <h1>Patient Dashboard</h1>
+  <a class="button pull-right" href="/meetings/book">+ Book meeting</a>
 </div>
 
+<% if (meetings.current.length > 0) { %>
+<h3>Current meeting</h3>
+<div class="column meeting-strip">
+  <% for (var m of meetings.current) { %>
+    <div class="row meeting-item">
+      <div class="meeting-item-time"><time><%= m.start_time %><time></div>
+      <div class="meeting-item-info grow">Doctor: <%= m['Doctor.name'] %></div>
+      <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
+    </div>
+  <% } %>
+</div>
+<% } %>
 
 <h2>Upcoming meetings</h2>
 
 <% if (meetings.upcoming.length > 0) { %>
-  <div class="meeting-strip">
+  <div class="column meeting-strip">
     <% for (var m of meetings.upcoming) { %>
-      <div class="meeting-item">
-        <div><p>Doctor: <%= m['Doctor.name']  %></p></div>
-        <div class="meeting-item-time"><%= m.start_time %></div>
-        <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
+      <div class="row meeting-item">
+        <div class="meeting-item-time"><time><%= m.start_time %></time></div>
+        <div class="meeting-item-info grow">Doctor: <%= m['Doctor.name'] %></div>
+        <!-- <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div> -->
       </div>
     <% } %>
   </div>
 <% } else { %>
 
   <p>You don't have any upcoming meetings. You can <a href="/meetings/book">book a meeting</a>.</p>
-
-<% } %>
-
-
-<h2>Past meetings</h2>
-
-<% if (meetings.past.length > 0) { %>
-  <div class="meeting-strip past">
-    <% for (var m of meetings.past) { %>
-      <div class="meeting-item">
-        <div><p>Doctor: <%= m['Doctor.name']  %></p></div>
-        <div class="meeting-item-time"><%= m.start_time %></div>
-        <div><span class="button secondary disabled">Meeting Over</span></div>
-      </div>
-    <% } %>
-  </div>
-<% } else { %>
-
-  <p>You don't have past meetings.</p>
 
 <% } %>
 

@@ -8,20 +8,17 @@
   <form method="POST">
 
     <div>
-      <label>Start date and time:
-        <input type="date" class="start_date_input" autocomplete="off" name="start_date" maxlength="64" autofocus required>
-      </label>
+      <label for="field-start_date">Start date and time</label>
+      <input id="field-start_date" type="date" class="start_date_input" autocomplete="off" name="start_date" maxlength="64" autofocus required>
     </div>
 
     <div>
-      <label>Duration (in minutes):
-        <input type="number" autocomplete="off" name="duration" maxlength="2" required value="15">
-      </label>
+      <label for="field-duration">Duration (minutes)</label>
+      <input id="field-duration" type="number" autocomplete="off" name="duration" maxlength="2" required value="15">
     </div>
 
-    <div>
+    <div class="buttons">
       <input type="submit" value="Create">
-      <a href="/dashboard">Cancel</a>
     </div>
 
   </form>

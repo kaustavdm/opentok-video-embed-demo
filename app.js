@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   // Add method for adding static assets
   res.locals.assets = {
     // JavaScripts. Relative to `./static/js`
-    scripts: [],
+    scripts: ['ui.js'],
     // CSS. Relative to `./static/css`
     styles: ['ui.css']
   }

@@ -177,7 +177,24 @@ Doctor.associate = function (models) {
 
 ### [Patient model](models/patient.js)
 
-Used to store patient's name, reference to meetings booked by the patient and reference to he user account for the patient.
+Same as `Doctor` model, `Patient` model in the demo is used to store patient's name and references to user and meetings. Except, these are meetings booked by the patient.
+
+```js
+var Patient = sequelize.define('Patient', {
+  name: {
+    type: DataTypes.STRING
+  }
+});
+```
+
+```js
+Patient.associate = function (models) {
+  // 1:1 relationship with `User`
+  Patient.User = Patient.belongsTo(models.User);
+  // 1:M relationship with `Meeting`
+  Patient.Meetings = Patient.hasMany(models.Meeting);
+};
+```
 
 ### [Meeting model](models/meeting.js)
 

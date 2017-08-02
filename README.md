@@ -13,6 +13,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
   - [Tech dependencies](#tech-dependencies)
   - [Initializing application](#initializing-application)
   - [Data model](#data-model)
+  - [Setup ExpressJS app](#setup-expressjs-app)
   - [Server startup script](#server-startup-script)
 
 # Overview
@@ -260,6 +261,50 @@ const models = require('./models');
 // - `models.Meeting`
 // - `models.Appdata`
 ```
+
+## Setup ExpressJS app
+
+The script [`./app.js`](app.js) creates, mounts and exports an ExpressJS app instance.
+
+```js
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
+// Create express instance
+const app = express();
+```
+
+Set view engine and middleware parsers:
+
+```js
+// view engine setup
+app.set('view engine', 'ejs');
+
+// parse data in request body
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// parse signed cookies
+app.use(cookieParser(secret));
+```
+
+Mount routes:
+
+```js
+// Mount the `./static` directory as a static file server
+app.use(express.static(path.join(__dirname, 'static')));
+// Mount the `./routes` module
+app.use('/', require('./routes'));
+```
+
+Export the `app` instance:
+
+```js
+module.exports = app
+```
+
+[`app.js`](app.js) also mounts other middleware for session management, script management and loading embed code. Take a look at the file for details.
 
 ## Server startup script
 

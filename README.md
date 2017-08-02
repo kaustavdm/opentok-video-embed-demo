@@ -233,6 +233,25 @@ Used to store application data as key-value pairs. This is only used to store th
 
 We'll move on to the more interesting parts.
 
+### Model bootstrapping
+
+The script at [`models/index.js`](models/index.js) bootstraps the models, establishes database connection using data from `DATABASE_URL` environment variable and loads all models in the directory. The loaded models are added as properties of the exported object, effectively converting the [`models`](models) directory in a module.
+
+The rest of the application can load models by `require()`-ing this directory, like:
+
+```js
+// Load the `models` directory from project root. Adjust relative path for
+// nested directories.
+const models = require('./models');
+
+// The models are now available as:
+// - `models.User`
+// - `models.Doctor`
+// - `models.Patient`
+// - `models.Meeting`
+// - `models.Appdata`
+```
+
 ## Server startup script
 
 The script at [`./bin/www`](bin/www) lauches the application. It does these two things:

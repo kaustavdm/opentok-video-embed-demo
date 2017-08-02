@@ -1,26 +1,33 @@
 <%- include('includes/header') %>
 
-<section>
-  <h2>Book meeting slots</h2>
+<h2>Book meeting slots</h2>
 
-  <% if (meetings.length > 0) { %>
-    <% for (var m of meetings) { %>
-      <div class="meeting-item">
-        <div>Doctor: <%= m['Doctor.name'] %></div>
-        <div class="meeting-item-time">Time: <%= m.start_time %></div>
-        <div>
-          <form method="POST">
-            <input type="hidden" name="meeting_id" value="<%= m.id %>">
-            <input type="hidden" name="patient_id" value="<%= user.id %>">
-            <input type="submit" value="Book">
-          </form>
-        </div>
+<% if (doctors.length > 0) { %>
+  <% for (var d of doctors) { %>
+    <section class="doc-list">
+      <h3>Doctor: <%= d.name %></h3>
+      <div>
+        <% if (d.Meetings.length > 0) { %>
+          <% for (var m of d.Meetings) { %>
+            <div class="row meeting-item">
+              <div class="meeting-item-time grow"><time><%= m.start_time %></time></div>
+              <div>
+                <form method="POST">
+                  <input type="hidden" name="meeting_id" value="<%= m.id %>">
+                  <input type="hidden" name="patient_id" value="<%= user.id %>">
+                  <input type="submit" value="Book">
+                </form>
+              </div>
+            </div>
+          <% } %>
+        <% } else { %>
+          <p>No appointments available.</p>
+        <% } %>
       </div>
-    <% } %>
-  <% } else { %>
-    <p>No meeting slots are available now.</p>
+    </section>
   <% } %>
-
-</section>
+<% } else { %>
+  <p>No doctors registered yet.</p>
+<% } %>
 
 <%- include('includes/footer') %>

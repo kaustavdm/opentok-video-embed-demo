@@ -11,7 +11,7 @@
   <% for (var m of meetings.current) { %>
     <div class="row meeting-item">
       <div class="meeting-item-time"><time><%= m.start_time %><time></div>
-      <div class="meeting-item-info grow">Doctor: <%= m['Doctor.name'] %></div>
+      <div class="meeting-item-info grow">Doctor: <%= m.Doctor.name %></div>
       <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
     </div>
   <% } %>
@@ -25,7 +25,7 @@
     <% for (var m of meetings.upcoming) { %>
       <div class="row meeting-item">
         <div class="meeting-item-time"><time><%= m.start_time %></time></div>
-        <div class="meeting-item-info grow">Doctor: <%= m['Doctor.name'] %></div>
+        <div class="meeting-item-info grow">Doctor: <%= m.Doctor.name %></div>
       </div>
     <% } %>
   </div>

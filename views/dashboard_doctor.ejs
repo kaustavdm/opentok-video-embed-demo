@@ -9,15 +9,15 @@
 <h3>Current meeting</h3>
 <div class="column meeting-strip">
   <% for (var m of meetings.current) { %>
-    <% if (m.PatientId != null) { %>
+    <% if (m.Patient != null) { %>
       <div class="row meeting-item">
         <div class="meeting-item-time"><time><%= m.start_time %></time></div>
-        <div class="meeting-item-info grow">Patient: <%= m['Patient.name'] %></div>
+        <div class="meeting-item-info grow">Patient: <%= m.Patient.name %></div>
         <div class="pull-right"><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
       </div>
     <% } else { %>
       <div class="row meeting-item unclaimed">
-        <div class="meeting-item-time"><time>%= m.start_time %></time></div>
+        <div class="meeting-item-time"><time><%= m.start_time %></time></div>
         <div class="meeting-item-info grow">Patient: None</div>
         <div><span class="button secondary disabled">Unclaimed</span></div>
       </div>
@@ -32,15 +32,13 @@
 <% if (meetings.upcoming.length > 0) { %>
   <div class="column meeting-strip">
     <% for (var m of meetings.upcoming) { %>
-      <% if (m.PatientId != null) { %>
+      <% if (m.Patient != null) { %>
         <div class="row meeting-item">
           <div class="meeting-item-time"><time><%= m.start_time %></time></div>
-          <div class="meeting-item-info grow">Patient: <%= m['Patient.name'] %></div>
-          <!-- <div><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div> -->
+          <div class="meeting-item-info grow">Patient: <%= m.Patient.name %></div>
         </div>
       <% } else { %>
         <div class="row meeting-item unclaimed">
-          <!-- <div class="meeting-item-info">Patient: None</div> -->
           <div class="meeting-item-time grow"><time><%= m.start_time %><time></div>
           <div><span class="button secondary disabled">Unclaimed</span></div>
         </div>

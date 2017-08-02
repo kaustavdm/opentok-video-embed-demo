@@ -2,55 +2,80 @@ const router = require('express').Router();
 const models = require('../models');
 const helper = require('./route_helper');
 
-router.get('/', helper.ensure_logged_in, (req, res, next) => {
-  let u;
+let m_filter = m => {
+  const currtime = Date.now();
 
-  let mopts_include = include_role => {
-    return {
-      where: { end_time: { $gt: new Date() }},
-      order: [['start_time', 'ASC']],
-      raw: true,
-      include: [{
-        model: models[include_role],
-        attributes: ['name']
-      }]
-    }
-  };
-
-  let m_filter = m => {
-    const currtime = Date.now();
-
-    return {
-      // Starting after 5 minutes
-      upcoming: m.filter(i => i.start_time.getTime() >= currtime + 300000 ),
-      // Starting in 5 minutes or has already started
-      current: m.filter(i => i.start_time.getTime() < currtime + 300000 && i.end_time.getTime() >= currtime)
-    }
-  };
-
-  if (req.session.user.role === 'Doctor') {
-    u = req.User.getDoctor()
-      .then(D => {
-        res.locals.user.name = D.name;
-        return D.getMeetings(mopts_include('Patient'));
-      })
-      .then(m => res.render('dashboard_doctor', { meetings: m_filter(m) }));
-  } else if (req.session.user.role === 'Patient') {
-    u = req.User.getPatient()
-      .then(P => {
-        res.locals.user.name = P.name;
-        return P.getMeetings(mopts_include('Doctor'))
-      })
-      .then(m => res.render('dashboard_patient', { meetings: m_filter(m) }));
-  } else {
-    res.redirect('/user/logout');
-    return;
+  return {
+    // Starting after 5 minutes
+    upcoming: m.filter(i => i.start_time.getTime() >= currtime + 300000 ),
+    // Starting in 5 minutes or has already started
+    current: m.filter(i => i.start_time.getTime() < currtime + 300000 && i.end_time.getTime() >= currtime)
   }
+};
 
-  u.catch(err => {
-    next(err);
-  });
+/**
+ * Doctor's dashboard
+ */
+router.get('/doctor', helper.ensure_logged_in, helper.check_role('Doctor'), (req, res, next) => {
+  req.User.getDoctor({
+    include: [{
+      model: models.Meeting,
+      attributes: ['id', 'start_time', 'end_time'],
+      where: { end_time: { $gt: new Date() }},
+      required: false,
+      include: [{
+        model: models.Patient,
+        attributes: ['id', 'name'],
+        required: false
+      }]
+    }],
+    order: [[ models.Meeting, 'start_time', 'ASC']]
+  })
+    .then(D => {
+      res.locals.user.name = D.name;
+      const doc = D.get({ plain: true });
+      res.render('dashboard_doctor', { meetings: m_filter(doc.Meetings), doctor: doc })
+    })
+    .catch(next);
 });
 
+/**
+ * Patient's dashboard
+ */
+router.get('/patient', helper.ensure_logged_in, helper.check_role('Patient'), (req, res, next) => {
+  req.User.getPatient({
+    include: [{
+      model: models.Meeting,
+      attributes: ['id', 'start_time', 'end_time'],
+      where: { end_time: { $gt: new Date() }},
+      required: false,
+      include: [{
+        model: models.Doctor,
+        attributes: ['id', 'name']
+      }]
+    }],
+    order: [[ models.Meeting, 'start_time', 'ASC']]
+  })
+    .then(P => {
+      res.locals.user.name = P.name;
+      const patient = P.get({ plain: true });
+      // console.log(m_filter(patient.Meetings));
+      res.render('dashboard_patient', { meetings: m_filter(patient.Meetings), patient: patient })
+    })
+    .catch(next);
+});
+
+/**
+ * Redirect to role-specific dashboard depending on current logged in user's role
+ */
+router.get('/', helper.ensure_logged_in, (req, res, next) => {
+  if (req.User.role === 'Doctor') {
+    res.redirect('/dashboard/doctor');
+  } else if (req.User.role === 'Patient') {
+    res.redirect('/dashboard/patient');
+  } else {
+    next(new Error('Invalid user role'));
+  }
+});
 
 module.exports = router;

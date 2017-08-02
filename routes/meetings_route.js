@@ -4,23 +4,29 @@ const helper = require('./route_helper');
 
 router.use(helper.ensure_logged_in);
 
+/**
+ * Render page for booking appointments
+ */
 router.get('/book', helper.check_role('Patient'), (req, res, next) => {
-  models.Meeting.findAll({
-    where: { start_time: { $gt: new Date() }, PatientId: null },
-    attributes: ['id', 'start_time', 'end_time'],
-    order: [['start_time', 'ASC']],
-    raw: true,
+  models.Doctor.findAll({
+    attributes: ['id', 'name'],
     include: [{
-      model: models.Doctor,
-      attributes: ['id', 'name']
-    }]
+      model: models.Meeting,
+      attributes: ['id', 'start_time', 'end_time'],
+      where: { start_time: { $gt: new Date() }, PatientId: null },
+      required: false
+    }],
+    order: [['name', 'ASC'], [models.Meeting, 'start_time', 'ASC']]
   })
-  .then(m => {
-    res.render('book_meeting', { meetings: m })
+  .then(d => {
+    res.render('book_meeting', { doctors: d.map(d => d.get({ plain: true }))})
   })
   .catch(next);
 });
 
+/**
+ * Handle form for booking appointment
+ */
 router.post('/book', helper.check_role('Patient'), (req, res, next) => {
   models.Meeting.findById(req.body.meeting_id)
     .then(m => {
@@ -29,7 +35,7 @@ router.post('/book', helper.check_role('Patient'), (req, res, next) => {
           return m.setPatient(p);
         })
     })
-    .then(m => res.redirect('/dashboard'))
+    .then(() => res.redirect('/dashboard'))
     .catch(next);
 });
 
@@ -59,21 +65,12 @@ router.post('/create', helper.check_role('Doctor'), (req, res, next) => {
 router.get('/join/:meeting_id', helper.ensure_logged_in, (req, res, next) => {
   models.Meeting.findOne({
     where: { id: req.params.meeting_id },
-    raw: true,
     include: [{
       model: models.Doctor,
-      attributes: ['id', 'name'],
-      include: [{
-        model: models.User,
-        attributes: ['id']
-      }]
+      attributes: ['id', 'name', 'UserId']
     }, {
       model: models.Patient,
-      attributes: ['id', 'name'],
-      include: [{
-        model: models.User,
-        attributes: ['id']
-      }]
+      attributes: ['id', 'name', 'UserId']
     }]
   })
   .then(meeting => {
@@ -81,12 +78,17 @@ router.get('/join/:meeting_id', helper.ensure_logged_in, (req, res, next) => {
       next();
       return;
     }
-    if (req.User.id !== meeting[`${req.User.role}.User.id`]) {
+    if (req.User.id !== meeting[req.User.role].UserId) {
       next();
       return;
     }
     const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
-    res.render('meeting', { embed_code: embed_code, meeting: meeting });
+    if (Date.parse(meeting.end_time) < Date.now()) {
+      res.locals.meeting_over = true;
+    } else {
+      res.locals.meeting_over = false;
+    }
+    res.render('meeting', { embed_code: embed_code, meeting: meeting.get({ plain: true }) });
   })
   .catch(next);
 });

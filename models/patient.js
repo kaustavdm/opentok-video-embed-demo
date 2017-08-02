@@ -9,7 +9,6 @@ module.exports = function (sequelize, DataTypes) {
 
   Patient.associate = function (models) {
     Patient.User = Patient.belongsTo(models.User);
-    Patient.Doctors = Patient.belongsToMany(models.Doctor, { through: 'DoctorPatient' });
     Patient.Meetings = Patient.hasMany(models.Meeting);
   };
 

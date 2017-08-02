@@ -50,8 +50,8 @@ In this example, a doctor can create meetings for time slots when they are avail
 
 ## Tech dependencies
 
-- Database: PostgreSQL
-- Application backend: [NodeJS](http://nodejs.org)
+- Database: [PostgreSQL 9.6+](https://www.postgresql.org)
+- Application backend: [NodeJS 6.9+](http://nodejs.org)
     - Routing framework: [ExpressJS](http://expressjs.com/)
     - Database ORM: [Sequelize](sequelizejs.com)
     - View engine: [ejs](http://ejs.co/)
@@ -120,7 +120,7 @@ var User = sequelize.define('User', {
     }
   },
 
-  // salt field. this is set when setting the password
+  // salt field. This is set when setting the password
   salt: {
     type: DataTypes.STRING,
     allowNull: false
@@ -137,7 +137,7 @@ var User = sequelize.define('User', {
 });
 ```
 
-`User` model has associations defined to portray relationships between models. `User` maintains nullable references to `Doctor` and `Patient` model as a user can be either a "doctor" or a "patient".
+`User` model has associations defined to portray relationships between models. `User` maintains nullable references to `Doctor` and `Patient` model as a user can be either a "doctor" or a "patient". When we create a new `User`, we also create a corresponding `Doctor` or `Patient`.
 
 ```js
 User.associate = function (models) {

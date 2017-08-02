@@ -88,6 +88,66 @@ This is how the models' structure look like:
 
 Used to store user authentication information, user role and reference to either a `Doctor` or a `Patient` model, depending on the role.
 
+`User` model definition:
+
+```js
+// Define a sequelize model named `User`
+var User = sequelize.define('User', {
+
+  // username field
+  username: {
+    // Type: string
+    type: DataTypes.STRING,
+    // Does not allow null
+    allowNull: false,
+    // Should be unique
+    unique: true
+  },
+
+  // password field
+  password: {
+    // Type: string
+    type: DataTypes.STRING,
+    // Does not allow null
+    allowNull: false,
+    // Generates hash when new value is set
+    set (val) {
+      const salt = generateSalt();
+      const hashed = sha512(val, salt);
+      // Store hashed password and salt
+      this.setDataValue('password', hashed);
+      this.setDataValue('salt', salt);
+    }
+  },
+
+  // salt field. this is set when setting the password
+  salt: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+
+  // role field, can be either a 'Doctor' or a 'Patient' in this example
+  role: {
+    // Data type as `ENUM` lets us accept only a known list of values at
+    // database level
+    type: DataTypes.ENUM('Doctor', 'Patient'),
+    defaultValue: 'Doctor',
+    allowNull: false
+  }
+});
+```
+
+`User` model has associations defined to portray relationships between models. `User` maintains nullable references to `Doctor` and `Patient` model as a user can be either a "doctor" or a "patient".
+
+```js
+User.associate = function (models) {
+  // HasOne relationship to `Doctor` model.
+  User.hasOne(models.Doctor);
+  // HasOne relationship to `Patient` model
+  User.hasOne(models.Patient);
+}
+```
+
 ### [Doctor model](models/doctor.js)
 
 Used to store doctor's name, reference to meetings created by the doctor and reference to the user account for the doctor.
@@ -114,30 +174,29 @@ Create file [`./bin/www`](bin/www). This script will:
 Set up the `app` and `http` instances:
 
 ```js
+// Load dependencies, including `app.js` and the `models` module from project
+// root
 const app = require('../app');
 const http = require('http');
 const models = require('../models');
 
-/**
- * Get port from environment and store in Express.
- */
+// Get port from environment and store in Express.
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+// Create HTTP server.
 const server = http.createServer(app);
 ```
 
 Connect Sequelize to DB and start HTTP server if successful:
 
 ```js
+// Call `sequelize.sync()` which synchronizes model states with database
+// and create tables if necessary. This method returns a `Promise`.
 models.sequelize.sync()
   .then(() => {
+    // If DB was successfully synced, launch HTTP server
     server.listen(port);
-    server.on('error', on_error);
-    server.on('listening', on_listening);
   })
   .catch((err) => {
     console.error('Error synchronizing DB', err);

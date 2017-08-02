@@ -9,6 +9,11 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 - [Overview](#overview)
 - [Install](#install)
 - [Tutorial](#tutorial)
+  - [Workflow](#workflow)
+  - [Tech dependencies](#tech-dependencies)
+  - [Initializing application](#initializing-application)
+  - [Data model](#data-model)
+  - [Server startup script](#server-startup-script)
 
 # Overview
 
@@ -78,7 +83,7 @@ $ npm install --save express ejs sequelize pg pg-hstore express-session body-par
 
 **Note:** The rest of the tutorial contains relevant code sections for each file. For full code, go through the entire file in the repository.
 
-## Setting up data model
+## Data model
 
 The data model used in the demo uses a user table, a doctor table, a patient table, a meeting table and a separate table to store application data. [Sequelize models](http://docs.sequelizejs.com/manual/tutorial/models-definition.html) help us to model these tables so that we can work with them from our application without directly writing SQL. The models are present as Sequelize `models` in the `./models/` directory.
 
@@ -204,7 +209,7 @@ User to store meeting information. Each meeting contains reference to doctor and
 
 Used to store application data as key-value pairs. This is only used to store the OpenTok video embed code to use in the meetings.
 
-## Create server startup script
+## Server startup script
 
 Create file [`./bin/www`](bin/www). This script will:
 

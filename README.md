@@ -314,11 +314,17 @@ The [`./routes/`](routes) directory is built as a module to separate individual 
 **`routes/index.js`**:
 
 ```js
+const router = require('express').Router();
+
 // Serve `home` view. This renders `views/home.ejs`
 router.get('/', helper.redirect_logged_in, (req, res) => {
   res.render('home');
 });
+```
 
+The `routes/helper.js` file contains useful middleware that are used by the rest of the routes. These include middleware like validating if the user is logged in, redirecting if user is either not logged in or logged in. One of them are used here to redirect logged in users away from the homepage to their respective dashboards.
+
+```js
 // Load other routes and mount them
 router.use('/setup', require('./setup_route'));
 router.use('/user', require('./user_route'));
@@ -327,6 +333,62 @@ router.use('/meetings', require('./meetings_route'));
 
 module.exports = router;
 ```
+
+### User route
+
+The [`/user` route](routes/user_route.js) handles forms for login and register. This demo simulates very simplistic register and login cycle to demonstrate its functionalities. A production application should have more sophisticated approach towards user authentication.
+
+### Dashboard routes
+
+There are two dashboards in the demo, one for doctors and another for patients. They are almost identical with slight differences.
+
+Patient dashboard shows meetings that the patient has booked and links to the page for booking available meeting slots. Doctor dashboard shows upcoming appointments that the doctor has created, including the ones which haven't been booked already by any patient. There is also a link to create new meeting slots. Both of the dashboards highlight current meeting with a link to join the meeting.
+
+The [`./routes/dashboard_route.js`](routes/dashboard_route.js) contains the logic for querying database and rendering both dashboards. The associations described in the models come in handy here.
+
+Doctor dashboard renders the view at [`./views/dashboard_doctor.ejs`](views/dashboard_doctor.ejs). This is how the doctor dashboard (`/dashboard/doctor/`) route loads data.:
+
+```js
+// ...
+// Sequelize makes these handy methods available. This queries on the 1:1
+// association between `User` and `Doctor` models.
+req.User.getDoctor({
+
+  // Eager load nested `Meeting` model.
+  // This runs a nested query with joins to return relational data in the same
+  // query
+  include: [{
+    model: models.Meeting,
+    attributes: ['id', 'start_time', 'end_time'],
+
+    // Only load meetings whose end_time has not crossed yet
+    where: { end_time: { $gt: new Date() }},
+
+    // Perform an OUTER JOIN, making sure that we get `Doctor` returned even
+    // if `Doctor` has no `Meetings` associated.
+    required: false,
+
+    // Further, fetch nested `Patient` data associated with each `Meeting`.
+    include: [{
+      model: models.Patient,
+      attributes: ['id', 'name'],
+      required: false
+    }]
+  }],
+
+  // Order results by the start_time of Meetings fetched
+  order: [[ models.Meeting, 'start_time', 'ASC']]
+})
+  // If `Promise` resolves, render the view
+  .then(D => {
+    // ...
+    const doc = D.get({ plain: true }); // Get plain JavaScript object from result
+    res.render('dashboard_doctor', data); // Render `dashboard_doctor` view
+  })
+  // ...
+```
+
+The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs)
 
 ## Server startup script
 

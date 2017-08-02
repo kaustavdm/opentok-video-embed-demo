@@ -30,7 +30,7 @@ See [INSTALL.md](INSTALL.md) for installation instruction and first time setup.
 
 # Tutorial
 
-This is a detailed, step-by-step run through of building this application.
+This is a detailed, step-by-step run through of building the demo.
 
 ## Workflow
 

@@ -15,6 +15,8 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
   - [Data model](#data-model)
   - [Setup ExpressJS app](#setup-expressjs-app)
   - [Setup routes](#setup-routes)
+  - [Meetings](#meetings)
+    - [Generate dynamic rooms using embed](#generate-dynamic-rooms-using-embed)
   - [Server startup script](#server-startup-script)
 
 # Overview
@@ -389,6 +391,41 @@ req.User.getDoctor({
 ```
 
 The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs)
+
+## Meetings
+
+[`./routes/meeting_route.js`](routes/meeting_route.js) handles route for creating, booking and joining meetings. Only doctors can create meetings, only patients can book available meetings and either can join a meeting that they belong to. See the route for details.
+
+### Generate dynamic rooms using embed
+
+The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting details, including associated `Doctor` and `Patient` details, fetches embed code and passes these to the view for rendering.
+
+**It replaces the `room` parameter in the embed code's URL according to the meeting id. This is how the same OpenTok video embed is used for different meetings even at the same time:**
+
+```js
+// Here `req.embed_code` contains the orginal embed code obtained for an
+// OpenTok video embed
+const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
+```
+
+So, this embed code:
+
+```html
+<div id="otEmbedContainer" style="width:800px; height:640px"></div>
+<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<embedid>&room=DEFAULT_ROOM"></script>
+```
+
+becomes:
+
+```html
+<!-- Where meeting id is 42 -->
+<div id="otEmbedContainer" style="width:800px; height:640px"></div>
+<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<embedid>&room=meeting42"></script>
+```
+
+The view for joining meetings is at [`./views/meeting.ejs`](views/meeting.ejs). This view simply adds the resulting embed code to the output if the meeting is not yet over.
+
+This works for both `<iframe>` and JavaScript versions of the embed code.
 
 ## Server startup script
 

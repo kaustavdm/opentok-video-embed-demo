@@ -235,9 +235,18 @@ We'll move on to the more interesting parts.
 
 ### Model bootstrapping
 
-The script at [`models/index.js`](models/index.js) bootstraps the models, establishes database connection using data from `DATABASE_URL` environment variable and loads all models in the directory. The loaded models are added as properties of the exported object, effectively converting the [`models`](models) directory in a module.
+The script at [`models/index.js`](models/index.js) bootstraps the models, establishes database connection using data from `DATABASE_URL` environment variable and loads all models in the directory.
 
-The rest of the application can load models by `require()`-ing this directory, like:
+This is how it connects to database:
+
+```js
+sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  // ...
+});
+```
+
+The loaded models are added as properties of the exported object, effectively converting the [`models`](models) directory in a module. The rest of the application can load models by `require()`-ing this directory, like:
 
 ```js
 // Load the `models` directory from project root. Adjust relative path for

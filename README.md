@@ -14,6 +14,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
   - [Initializing application](#initializing-application)
   - [Data model](#data-model)
   - [Setup ExpressJS app](#setup-expressjs-app)
+  - [Setup routes](#setup-routes)
   - [Server startup script](#server-startup-script)
 
 # Overview
@@ -305,6 +306,27 @@ module.exports = app
 ```
 
 [`app.js`](app.js) also mounts other middleware for session management, script management and loading embed code. Take a look at the file for details.
+
+## Setup routes
+
+The [`./routes/`](routes) directory is built as a module to separate individual HTTP route segments in different files. [`routes/index.js`](routes/index.js) loads relevant routes from the same directory and mounts them on the exported route, which `app.js` mounts at `/` (root).
+
+**`routes/index.js`**:
+
+```js
+// Serve `home` view. This renders `views/home.ejs`
+router.get('/', helper.redirect_logged_in, (req, res) => {
+  res.render('home');
+});
+
+// Load other routes and mount them
+router.use('/setup', require('./setup_route'));
+router.use('/user', require('./user_route'));
+router.use('/dashboard', require('./dashboard_route'));
+router.use('/meetings', require('./meetings_route'));
+
+module.exports = router;
+```
 
 ## Server startup script
 

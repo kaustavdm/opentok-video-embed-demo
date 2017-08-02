@@ -211,7 +211,7 @@ Used to store application data as key-value pairs. This is only used to store th
 
 ## Server startup script
 
-Create file [`./bin/www`](bin/www). This script will:
+The script at [`./bin/www`](bin/www) lauches the application. It does these two things:
 
 - launch sequelize and synchronize database, creating tables if required
 - require the ExpressJS `app` and launch a `HTTP` server depending on the port configuration specified

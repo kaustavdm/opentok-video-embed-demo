@@ -10,7 +10,8 @@ window.addEventListener('load', function () {
         var t_local_time = new Date(el_list[i].innerText);
         var t_date = t_local_time.toDateString() === today ? 'Today' : t_local_time.toLocaleDateString();
         var t_hours = t_local_time.getHours();
-        var t_hours_12 = t_hours < 10 ? t_hours === 0 ? '12' : '0' + t_hours : t_hours;
+        var t_hours_12 = t_hours % 12;
+        t_hours_12 = t_hours_12 || 12;
         var t_am_pm = t_hours >= 12 ? 'pm' : 'am';
         var t_minutes = t_local_time.getMinutes() < 10 ? '0' + t_local_time.getMinutes() : t_local_time.getMinutes();
         el_list[i].innerText = [

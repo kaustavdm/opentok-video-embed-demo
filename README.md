@@ -205,9 +205,31 @@ Patient.associate = function (models) {
 
 User to store meeting information. Each meeting contains reference to doctor and patient for that meeting, plus start time and end time for the meeting. The auto-generated meeting IDs are used to create meeting URLs and to create different room per meeeting.
 
+```js
+var Meeting = sequelize.define('Meeting', {
+  // Store start date and time for meeting
+  start_time: DataTypes.DATE,
+  // Store end date and time for meeting
+  end_time: DataTypes.DATE
+});
+```
+
+Each `Meeting` belongs to one `Doctor` and one `Patient`. When a doctor creates a meeting, `Meeting` is initialized with `NULL` value for `Patient`. Once a patient books the meeting, the `Patient` ID is added to the `Meeting`.
+
+```js
+Meeting.associate = function (models) {
+  // 1:1 relationship with `Doctor`
+  Meeting.Doctor = Meeting.belongsTo(models.Doctor);
+  // 1:1 relationship with `Patient`
+  Meeting.Patient = Meeting.belongsTo(models.Patient);
+};
+```
+
 ### [Appdata model](models/appdata.js)
 
-Used to store application data as key-value pairs. This is only used to store the OpenTok video embed code to use in the meetings.
+Used to store application data as key-value pairs. This is only used to store the OpenTok video embed code to use in the meetings. There are different ways for storing application configuration for real-world applications. This demo uses this model to avoid storing the OpenTok Embed code in a separate file. See [`Appdata`](models/appdata.js) model for the model schema.
+
+We'll move on to the more interesting parts.
 
 ## Server startup script
 

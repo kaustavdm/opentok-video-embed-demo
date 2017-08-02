@@ -8,7 +8,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 
 - [Overview](#overview)
 - [Install](#install)
-- [Tutorial](#tutorial)
+- [Walkthrough](#walkthrough)
   - [Workflow](#workflow)
   - [Tech dependencies](#tech-dependencies)
   - [Initializing application](#initializing-application)
@@ -31,9 +31,9 @@ See [INSTALL.md](INSTALL.md) for installation instruction and first time setup.
 
 ---
 
-# Tutorial
+# Walkthrough
 
-This is a detailed, step-by-step run through of building the demo.
+This is a step-by-step walkthrough of building the demo, highlighting the important pieces.
 
 ## Workflow
 

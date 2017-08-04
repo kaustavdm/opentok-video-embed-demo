@@ -35,6 +35,7 @@ router.get('/create', (req, res) => {
   res.locals.assets.styles.push('flatpickr.min.css');
   res.locals.assets.scripts.push('flatpickr.min.js');
   res.locals.assets.scripts.push('scheduling_ui.js');
+  res.locals.user = { role: 'Doctor' };
   res.render('create_meeting');
 });
 

@@ -25,9 +25,11 @@ OpenTok video embeds are simple embeddable widgets that can be added to web page
 
 This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
 
+**Note**: For a simpler version of this demo, without external database, user authentication etc., check the [`master`](https://github.com/kaustavdm/ot_embed_appointment_demo/tree/master) branch.
+
 # Install
 
-See [INSTALL.md](INSTALL.md) for installation instruction and first time setup.
+**See [INSTALL.md](INSTALL.md) for installation instruction and first time setup.**
 
 ---
 
@@ -52,7 +54,7 @@ In this example, a doctor can create meetings for time slots when they are avail
 
 ### Patient workflow
 
-- Doctor logs in
+- Patient logs in
 - Searches for available appointment slots and books the one that they want.
 - Patient's dashboard shows upcoming meeetings
 - Patient can click on corresponding meeting link to join the meeting.

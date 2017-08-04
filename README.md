@@ -122,7 +122,7 @@ Each meeting entry in `DB.meetings[]` uses this data structure:
 
 When a patient books a meeting the `booked` property is set to `true`. This is how a sample meeting entry looks like:
 
-```js
+```
 {
   id: 3,
   start_time: 2017-08-04T13:51:00.000Z,

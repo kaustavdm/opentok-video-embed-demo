@@ -2,7 +2,7 @@
 
 A small demo application demonstrating usage of [OpenTok video embeds](https://tokbox.com/developer/embeds/) in appointments.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/ot_embed_appointment_demo/tree/master)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/opentok-video-embed-demo/tree/master)
 
 # Table of Contents
 
@@ -25,7 +25,7 @@ OpenTok video embeds are simple embeddable widgets that can be added to web page
 
 This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
 
-**Note**: This branch contains a simple version of the demo, with in-memory database. Check the [`database`](https://github.com/kaustavdm/ot_embed_appointment_demo/tree/database) branch for an example and walkthrough with PostgreSQL as the database backend, basic user authentication and multiple doctor/patient support.
+**Note**: This branch contains a simple version of the demo, with in-memory database. Check the [`database`](https://github.com/kaustavdm/opentok-video-embed-demo/tree/database) branch for an example and walkthrough with PostgreSQL as the database backend, basic user authentication and multiple doctor/patient support.
 
 # Install
 
@@ -74,8 +74,8 @@ First up, install NodeJS and `npm`.
 Once all of these are ready, create a directory and initiate a `npm` project:
 
 ```sh
-$ mkdir -p ot_embed_appointment_demo/{bin,routes,static,views}
-$ cd ot_embed_appointment_demo
+$ mkdir -p opentok-video-embed-demo/{bin,routes,static,views}
+$ cd opentok-video-embed-demo
 $ npm init -y
 ```
 

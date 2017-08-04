@@ -1,0 +1,21 @@
+<%- include('includes/header') %>
+
+<h2>Book meeting slots</h2>
+
+<% for (var m of meetings) { %>
+  <div class="row meeting-item">
+    <div class="meeting-item-time grow"><time><%= m.start_time %></time></div>
+    <div>
+      <form method="POST">
+        <input type="hidden" name="meeting_id" value="<%= m.id %>">
+        <input type="submit" value="Book">
+      </form>
+    </div>
+  </div>
+<% } %>
+
+<% if (meetings.length === 0) { %>
+  <p>No meetings available.</p>
+<% } %>
+
+<%- include('includes/footer') %>

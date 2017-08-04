@@ -1,0 +1,23 @@
+<%- include('includes/header') %>
+
+<section>
+  <h2>Set up OpenTok embed code</h2>
+
+  <p>Create and paste an <a href="https://tokbox.com/developer/embeds" target="_blank">OpenTok video chat embed</a> code.</p>
+
+  <form method="POST">
+
+    <div>
+      <textarea id="embed_code_value" name="embed_code_value" rows="10" cols="20"
+        required autofocus><%= data %></textarea>
+    </div>
+
+    <div class="buttons">
+      <input type="submit" value="Set up">
+      <a href="/" class="button secondary">Cancel</a>
+    </div>
+
+  </form>
+</section>
+
+<%- include('includes/footer') %>

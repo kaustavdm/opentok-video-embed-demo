@@ -1,0 +1,53 @@
+<%- include('includes/header') %>
+
+<div class="row">
+  <h2>Doctor Dashboard</h2>
+  <a class="button pull-right" href="/meetings/create">+ Add meeting slot</a>
+</div>
+
+<% if (meetings.current.length > 0) { %>
+<h3>Current meeting</h3>
+<div class="column meeting-strip">
+  <% for (var m of meetings.current) { %>
+    <% if (m.booked) { %>
+      <div class="row meeting-item">
+        <div class="meeting-item-time grow"><time><%= m.start_time %></time></div>
+        <div class="pull-right"><a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a></div>
+      </div>
+    <% } else { %>
+      <div class="row meeting-item unclaimed">
+        <div class="meeting-item-time grow"><time><%= m.start_time %></time></div>
+        <div><span class="button secondary disabled">Unclaimed</span></div>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+<% } %>
+
+
+<h3>Upcoming meetings</h3>
+
+<% if (meetings.upcoming.length > 0) { %>
+  <div class="column meeting-strip">
+    <% for (var m of meetings.upcoming) { %>
+      <% if (m.booked) { %>
+        <div class="row meeting-item">
+          <div class="meeting-item-time grow"><time><%= m.start_time %></time></div>
+          <div><span class="button disabled">Booked</span></div>
+        </div>
+      <% } else { %>
+        <div class="row meeting-item unclaimed">
+          <div class="meeting-item-time grow"><time><%= m.start_time %><time></div>
+          <div><span class="button secondary disabled">Unclaimed</span></div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+
+<% } else { %>
+
+  <p>You don't have any upcoming meetings. You can <a href="/meetings/create">create a meeting</a>.</p>
+
+<% } %>
+
+<%- include('includes/footer') %>

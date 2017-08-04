@@ -2,7 +2,7 @@
 
 This application uses PostgreSQL for database and NodeJS for server-side rendering. It can also be installed on Heroku with one-click by clicking the button below.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/ot_embed_appointment_demo)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/opentok-video-embed-demo/tree/database)
 
 ## Requirements
 
@@ -15,11 +15,11 @@ Install the following:
 
 ## Setup
 
-Clone or [download](https://github.com/kaustavdm/ot_embed_appointment_demo/archive/master.zip) the project and change to the project root directory:
+Clone or [download](https://github.com/kaustavdm/opentok-video-embed-demo/archive/master.zip) the project and change to the project root directory:
 
 ```sh
-$ git clone git://github.com/kaustavdm/ot_embed_appointment_demo
-$ cd ot_embed_appointment_demo
+$ git clone git://github.com/kaustavdm/opentok-video-embed-demo
+$ cd opentok-video-embed-demo
 ```
 
 Install application dependencies:

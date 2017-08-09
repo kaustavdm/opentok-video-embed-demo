@@ -151,18 +151,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 ```
 
-Next, add middleware to programmatically load UI scripts and stylesheets in views, and set an ExpressJS response property to pass user data to views:
+Next, add middleware to ExpressJS `response` object property to pass user data to views:
 
 ```js
 // Set up middleware
 app.use((req, res, next) => {
-  // Add method for adding static assets
-  res.locals.assets = {
-    // JavaScripts. Relative to `./static/js`
-    scripts: ['ui.js'],
-    // CSS. Relative to `./static/css`
-    styles: ['ui.css']
-  }
   // Add empty user object for views
   res.locals.user = false;
   next();
@@ -234,7 +227,7 @@ Create file `views/home.ejs`. EJS templates use `.ejs` file extension by default
 <!doctype html>
 <html>
 <head>
-  <title>Set up OpenTok Video embed code</title>
+  <title>OpenTok Video Embed demo</title>
 </head>
 
 <body>
@@ -379,4 +372,83 @@ DB.meetings_filter = function (is_booked=null) {
     current: sort(mlist().filter(i => i.start_time.getTime() < currtime + 300000 && i.end_time.getTime() >= currtime))
   }
 };
+```
+
+### Doctor's dashboard
+
+The doctor's dashboard shows upcoming meeetings for the doctor - both that patient has booked and not booked.
+
+Create file `views/dashboard_doctor.ejs` and add this section of code in it:
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Doctor's dashboard</title>
+</head>
+
+<body>
+  <div>
+    <h2>Doctor Dashboard</h2>
+    <a href="/meetings/create">+ Add meeting slot</a>
+  </div>
+```
+
+Notice that the code above has a link for Doctor to create meeting page. We'll create that in a while.
+
+Next, show current meeting(s) in the view. This code uses EJS conditionals. EJS conditionals are written as regular JavaScript inside EJS tags `<%` and `>`. Append this code to `views/dashboard_doctor.ejs`:
+
+```html
+<% if (meetings.current.length > 0) { %>
+<h3>Current meeting</h3>
+<div>
+  <% for (var m of meetings.current) { %>
+    <% if (m.booked) { %>
+      <div>
+        <time><%= m.start_time %></time> -
+        <a href="/meetings/join/<%= m.id %>">Join meeting</a>
+      </div>
+    <% } else { %>
+      <div>
+        <time><%= m.start_time %></time> -
+        <span>Unclaimed</span>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+<% } %>
+```
+
+This block of code shows up only if there is a current meeting: `meetings.current.length > 0`. If there is any, it iterates over the `meetings.current` array, which was passed from the `/dashboard/doctor` route. For each meeting entry in that array, it shows a "Join meeting" link if the meeting entry has been booked. Else, it shows meeting as "Unclaimed". The URL to a meeting is created using the meeting `id`.
+
+Next, we'll show upcoming meetings - meetings that don't start in 5 minutes. The template logic is similar to current meeting, except if there are no upcoming meetings, we show a link to create a meeting. Append this final piece of code to `views/dashboard_doctor.ejs`:
+
+```html
+<h3>Upcoming meetings</h3>
+
+<% if (meetings.upcoming.length > 0) { %>
+  <div>
+    <% for (var m of meetings.upcoming) { %>
+      <% if (m.booked) { %>
+        <div>
+          <time><%= m.start_time %></time> -
+          <span>Booked</span>
+        </div>
+      <% } else { %>
+        <div>
+          <time><%= m.start_time %><time> -
+          <span>Unclaimed</span>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+
+<% } else { %>
+
+  <p>You don't have any upcoming meetings. You can <a href="/meetings/create">create a meeting</a>.</p>
+
+<% } %>
+
+</body>
+</html>
 ```

@@ -329,9 +329,9 @@ Create the view file for this route: `views/setup.ejs`. Add this HTML content to
         required autofocus><%= data %></textarea>
     </div>
 
-    <div class="buttons">
+    <div>
       <input type="submit" value="Set up">
-      <a href="/" class="button secondary">Cancel</a>
+      <a href="/">Cancel</a>
     </div>
 
   </form>
@@ -516,7 +516,7 @@ Create file `views/dashboard_patient.ejs` and add this content:
     <% for (var m of meetings.current) { %>
       <div>
         <time><%= m.start_time %><time> -
-        <a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a>
+        <a href="/meetings/join/<%= m.id %>">Join meeting</a>
       </div>
     <% } %>
   </div>
@@ -525,7 +525,7 @@ Create file `views/dashboard_patient.ejs` and add this content:
   <h2>Upcoming meetings</h2>
 
   <% if (meetings.upcoming.length > 0) { %>
-    <div class="column meeting-strip">
+    <div>
       <% for (var m of meetings.upcoming) { %>
         <div>
           <time><%= m.start_time %></time>

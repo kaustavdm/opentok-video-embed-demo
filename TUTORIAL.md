@@ -17,7 +17,7 @@ This tutorial will cover:
 5. [Setting up ExpressJS app](#setting-up-expressjs-app)
 6. [Setting up routes](#setting-up-routes)
 7. [Creating user dashboards](#creating-user-dashboards)
-8. Creating and joining meetings
+8. Creating and booking meetings
 9. Generating dynamic rooms using Video Embeds
 10. Creating script for launching server
 
@@ -189,17 +189,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 ```
 
-Next, add middleware to ExpressJS `response` object property to pass user data to views:
-
-```js
-// Set up middleware
-app.use((req, res, next) => {
-  // Add empty user object for views
-  res.locals.user = false;
-  next();
-});
-```
-
 Once these are done, add routes for express. First, mount the `./static/` directory on web root and then load the `./routes/` module (details on `./routes` module in the next section):
 
 ```js
@@ -350,7 +339,6 @@ const router = require('express').Router();
  * Doctor's dashboard
  */
 router.get('/doctor', (req, res) => {
-  res.locals.user = { role: 'Doctor' };
   // Render view with meetings that have a future end time
   res.render('dashboard_doctor', { meetings: DB.meetings_filter() })
 });
@@ -540,4 +528,80 @@ Create file `views/dashboard_patient.ejs` and add this content:
 
 </body>
 </html>
+```
+
+## Creating and booking meetings
+
+The meetings route handles creating and booking meetings. Create file `routes/meetings_route.js` and add this code to serve the view for create meeting:
+
+```js
+const router = require('express').Router();
+
+/**
+ * View for creating meeting
+ */
+router.get('/create', (req, res) => {
+  res.render('create_meeting');
+});
+```
+
+Next, add route to serve view for booking meeting:
+
+```js
+/**
+ * Render page for booking appointments
+ */
+router.get('/book', (req, res) => {
+  // Load only meetings with future data that haven't been booked yet
+  let m_list = DB.meetings_filter(false);
+  res.render('book_meeting', { meetings: [].concat(m_list.current, m_list.upcoming) });
+});
+```
+
+Next, add logic for handling create meeting form:
+
+```js
+/**
+ * Handle POST request to create new meeeting for doctor
+ */
+router.post('/create', (req, res) => {
+  // Create a `Date` object from the `start_date` input
+  const start_time = new Date(req.body.start_date);
+  // Create a `Date` object by calculating `start_date` + `duration` specified by user
+  const end_time = new Date(start_time.getTime() + (parseInt(req.body.duration) * 60000));
+  // Create meeting object that we will put in DB
+  const m = {
+    id: DB.meetings.length + 1, // Auto increment ID
+    start_time: start_time,
+    end_time: end_time,
+    booked: false
+  };
+  // Put the meeting object in DB
+  DB.meetings_put(m);
+  // Redirect to doctor's dashboard
+  res.redirect('/dashboard/doctor')
+});
+```
+
+Then, add logic for handling book meeting form:
+
+```js
+/**
+ * Handle form for booking appointment for patient
+ */
+router.post('/book', (req, res, next) => {
+  // Retrieve meeting by meeting_id
+  let m = DB.meetings_get(parseInt(req.body.meeting_id));
+  // If meeting_id is not found, return 404
+  if (m == null) {
+    next();
+    return;
+  };
+  // Else mark meeting as booked
+  m.booked = true;
+  // And save it
+  DB.meetings_put(m);
+  // Redirect to patient's dashboard
+  res.redirect('/dashboard/patient');
+});
 ```

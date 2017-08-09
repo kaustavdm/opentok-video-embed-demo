@@ -14,7 +14,7 @@ This tutorial will cover:
 2. [Setting up development environment and dependencies](#setting-up-development-enviroment-and-dependencies)
 3. [Creating a simple in-memory data store](#creating-a-simple-in-memory-data-store)
 4. [Setting up ExpressJS app](#setting-up-expressjs-app)
-5. Setting up routes
+5. [Setting up routes](#setting-up-routes)
 6. Creating route and view for meetings
 7. Generating dynamic rooms using Video Embeds
 8. Creating script for launching server
@@ -194,3 +194,31 @@ app.use(function (err, req, res, next) {
 // Export `app`
 module.exports = app;
 ```
+
+## Setting up routes
+
+We'll build the `./routes/` directory as a module to separate individual HTTP route segments in different files.
+
+Create file `routes/index.js`. This file exports the route that is loaded and mounted in `app.js`. It also loads other routes in the same directory and mounts them as sub-routes. Each of these routes are instances of [Express Router](http://expressjs.com/en/4x/api.html#router).
+
+Add this in `routes/index.js`:
+
+```js
+// File: routes/index.js
+
+const router = require('express').Router();
+
+// Serve `home` view. This renders `views/home.ejs`
+router.get('/', (req, res) => {
+  res.render('home');
+});
+
+// Load other routes and mount them
+router.use('/setup', require('./setup_route'));
+router.use('/dashboard', require('./dashboard_route'));
+router.use('/meetings', require('./meetings_route'));
+
+module.exports = router;
+```
+
+This loads 3 other files in the `routes/` directory - `setup_route.js`, `dashboard_route.js` and `meetings_route.js`.

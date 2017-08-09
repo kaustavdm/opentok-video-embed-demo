@@ -183,7 +183,7 @@ The [`./routes/`](routes) directory is built as a module to separate individual 
 const router = require('express').Router();
 
 // Serve `home` view. This renders `views/home.ejs`
-router.get('/', helper.redirect_logged_in, (req, res) => {
+router.get('/', (req, res) => {
   res.render('home');
 });
 

@@ -105,4 +105,39 @@ DB.meetings_put = function (new_meeting) {
 }
 ```
 
+Then, add this code to `db.js` to export the `DB` object:
 
+```js
+module.exports = DB;
+```
+
+We'll a few more methods to `db.js` later on to sort and filter entries. Let's set up an ExpressJS app before that.
+
+## Setting up ExpressJS app
+
+Create a file called `app.js` in the project root. This file will create, set up and export an ExpressJS app instance.
+
+Start by adding this code to `app.js`:
+
+```js
+/**
+ * Main app module
+ */
+
+// Load dependencies
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+
+// Create a nice little replacement for `console.log`
+const debug = require('util').debuglog('app');
+
+// Expose in-memory DB as `global`.
+global.DB = require('./db');
+
+// Initiate express application
+const app = express();
+
+// view engine setup
+app.set('view engine', 'ejs');
+```

@@ -17,7 +17,7 @@ This tutorial will cover:
 5. [Setting up ExpressJS app](#setting-up-expressjs-app)
 6. [Setting up routes](#setting-up-routes)
 7. [Creating user dashboards](#creating-user-dashboards)
-8. Creating and booking meetings
+8. [Creating and booking meetings](#creating-and-booking-meetings)
 9. Generating dynamic rooms using Video Embeds
 10. Creating script for launching server
 
@@ -677,4 +677,38 @@ window.addEventListener('load', function () {
     minDate: new Date(Date.now() + 60000)
   });
 });
+```
+
+### View for booking meeting
+
+This view for booking meeting will contain a list of available upcoming meetings. Each meeting entry will have a `<form>` with the meeting `id` as a hidden field. This meeting `id` is then used the `POST` handler route for booking meetings to update the meeting with `booked: true`:
+
+Create file `views/book_meeting.ejs` and add this content
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Book meeting slot</title>
+</head>
+
+<body>
+  <h2>Book meeting slots</h2>
+
+  <% for (var m of meetings) { %>
+    <div>
+      <time><%= m.start_time %></time> -
+      <form method="POST">
+        <input type="hidden" name="meeting_id" value="<%= m.id %>">
+        <input type="submit" value="Book">
+      </form>
+    </div>
+  <% } %>
+
+  <% if (meetings.length === 0) { %>
+    <p>No meetings available.</p>
+  <% } %>
+
+</body>
+</html>
 ```

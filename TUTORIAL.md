@@ -18,7 +18,7 @@ This tutorial will cover:
 6. [Setting up routes](#setting-up-routes)
 7. [Creating user dashboards](#creating-user-dashboards)
 8. [Creating and booking meetings](#creating-and-booking-meetings)
-9. Generating dynamic rooms using Video Embeds
+9. [Generating dynamic rooms using Video Embeds](#generating-dynamic-rooms-using-video-embeds)
 10. Creating script for launching server
 
 ## Workflow
@@ -711,4 +711,49 @@ Create file `views/book_meeting.ejs` and add this content
 
 </body>
 </html>
+```
+
+## Generating dynamic rooms using Video Embeds
+
+Now that we have the rest of the application set up, we need to serve the actual meetings. Each meeting will use the same OpenTok Video Embed, but change the value of `room` parameter in the URL of the Video Embed to a different value for each meeting. In this tutorial, we will use the meeting ID as the unique key for creating rooms. To do this, we will replace the default value of `room=DEFAULT_ROOM` with the meeting ID.
+
+Let's create the route for meeting. Edit the `route/meetings_route.js` file that we created before and add these lines of code before the `module.exports` line:
+
+```js
+// Our meeting URLs will be in the form of `/meetings/join/:meeting_id`
+
+/**
+ * View for joining meeting
+ */
+router.get('/join/:meeting_id', (req, res, next) => {
+  // Get meeting details from DB
+  const m = DB.meetings_get(parseInt(req.params.meeting_id));
+
+  // If meeting does not exist of meeting is not booked, send 404
+  if (m == null || !m.booked) {
+    next();
+    return;
+  }
+
+  // This is the key area where we create custom rooms using the same embed code.
+  // We do a simple string replace.
+  const embed_code = DB.embed_code.replace('DEFAULT_ROOM', `meeting${m.id}`);
+
+  // We redirect to URL to set up embed code if embed code is not set up
+  if (!embed_code) {
+    res.redirect('/setup');
+    return;
+  }
+
+  // Then, we figure out whether meeting is already over and bind it as
+  // a boolean property for the view
+  if (Date.parse(m.end_time) < Date.now()) {
+    res.locals.meeting_over = true;
+  } else {
+    res.locals.meeting_over = false;
+  }
+
+  // Finally, we render the view by passing it the embed_code and meetingg details
+  res.render('meeting', { embed_code: embed_code, meeting: m });
+});
 ```

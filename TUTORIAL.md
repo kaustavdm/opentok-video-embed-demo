@@ -314,7 +314,7 @@ Create the view file for this route: `views/setup.ejs`. Add this HTML content to
 </head>
 
 <body>
-  <h2>Set up OpenTok embed code</h2>
+  <h1>Set up OpenTok embed code</h1>
 
   <p>Create and paste an <a href="https://tokbox.com/developer/embeds" target="_blank">OpenTok video chat embed</a> code.</p>
 
@@ -422,7 +422,7 @@ Create file `views/dashboard_doctor.ejs` and add this section of code in it:
 
 <body>
   <div>
-    <h2>Doctor Dashboard</h2>
+    <h1>Doctor Dashboard</h1>
     <a href="/meetings/create">+ Add meeting slot</a>
   </div>
 ```
@@ -501,7 +501,7 @@ Create file `views/dashboard_patient.ejs` and add this content:
 
 <body>
   <div>
-    <h2>Patient Dashboard</h2>
+    <h1>Patient Dashboard</h1>
     <a href="/meetings/book">+ Book meeting slot</a>
   </div>
 
@@ -634,7 +634,7 @@ Create file `views/create_meeting.ejs` with the following content:
 </head>
 
 <body>
-  <h2>Create meeting slot</h2>
+  <h1>Create meeting slot</h1>
 
   <p>Meeting slots that you create here can be booked by patients.</p>
 
@@ -693,7 +693,7 @@ Create file `views/book_meeting.ejs` and add this content
 </head>
 
 <body>
-  <h2>Book meeting slots</h2>
+  <h1>Book meeting slots</h1>
 
   <% for (var m of meetings) { %>
     <div>

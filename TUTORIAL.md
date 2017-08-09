@@ -757,3 +757,61 @@ router.get('/join/:meeting_id', (req, res, next) => {
   res.render('meeting', { embed_code: embed_code, meeting: m });
 });
 ```
+
+### View for joining meetings
+
+Create `views/meeting.ejs` with the following content:
+
+```html
+<!doctype html>
+<head>
+  <title>Meeting <%= meeting.id %></title>
+</head>
+<body>
+
+  <% if (!meeting_over) { %>
+  <h1>Meeting</h1>
+  <div>
+    <div>Start: <time><%= meeting.start_time %></time></div>
+    <div id="message"></div>
+  </div>
+
+  <div id="ot_embed_demo_container"><%- embed_code %></div>
+  <p><a href="/">Exit</a></p>
+
+  <script>
+    window.addEventListener('load', function () {
+      var message_container = document.getElementById('message');
+      var end_time = Date.parse("<%= meeting.end_time %>");
+      var time_left = end_time - Date.now();
+
+      var update_time_remaining = function () {
+        var remaining = Math.round((end_time - Date.now()) / 60000);
+        message_container.innerHTML = '<p><strong>Time left: ' + remaining + ' minute(s).</strong></p>';
+      };
+
+      update_time_remaining();
+      setInterval(update_time_remaining, 60000);
+
+      setTimeout(function () {
+        window.location.reload();
+      }, time_left);
+    });
+  </script>
+
+  <% } else { %>
+    <p><strong>Meeting is over.</strong></p>
+    <p><a href="/" class="button">Exit</a></p>
+  <% } %>
+
+</body>
+</html>
+```
+
+This view loads the embed code only if meeting is not over. This results in the embed code showing up as a video chat widget when the page is loaded. If meeting is over, it prints a message saying "Meeting is over".
+
+The `<script>` section of the view prints a message using `setInterval` every minute showing how many minutes are left in the meeting. It also sets a timer using `setTimeout` which force reloads the page once the meeting time is over. Since the route pre-checks if meeting is over, such a reload will result in showing the "Meeting is over" message.
+
+Now, the only thing left is to bootstrap our `app` and launch a HTTP server.
+
+

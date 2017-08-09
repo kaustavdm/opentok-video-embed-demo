@@ -222,3 +222,58 @@ module.exports = router;
 ```
 
 This loads 3 other files in the `routes/` directory - `setup_route.js`, `dashboard_route.js` and `meetings_route.js`.
+
+### Routes for adding OpenTok Video Embed code
+
+Create file `routes/setup_route.js`. This file manages routes for a form that saves OpenTok Video Embed code in the in-memory database.
+
+```js
+const router = require('express').Router();
+
+// Serve the view `setup.ejs` for embed code setup form
+router.get('/', (req, res) => {
+  // We pass current embed code as `data` as property to the view
+  res.render('setup', { data: DB.embed_code || "" });
+});
+
+// Handle POST data from the form in the view.
+// We only set the `embed_code` property in `DB` and redirect to homepage.
+router.post('/', (req, res) => {
+  DB.embed_code = req.body.embed_code_value.trim();
+  res.redirect('/');
+});
+
+// Export the router
+module.exports = router;
+```
+
+Create the view file for this route: `views/setup.ejs`. EJS templates use `.ejs` file extension by default. Add this HTML content to the file:
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Set up OpenTok Video embed code</title>
+</head>
+
+<body>
+  <h2>Set up OpenTok embed code</h2>
+
+  <p>Create and paste an <a href="https://tokbox.com/developer/embeds" target="_blank">OpenTok video chat embed</a> code.</p>
+
+  <form method="POST">
+
+    <div>
+      <textarea id="embed_code_value" name="embed_code_value" rows="10" cols="20"
+        required autofocus><%= data %></textarea>
+    </div>
+
+    <div class="buttons">
+      <input type="submit" value="Set up">
+      <a href="/" class="button secondary">Cancel</a>
+    </div>
+
+  </form>
+</body>
+</html>
+```

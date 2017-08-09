@@ -15,7 +15,8 @@ This tutorial will cover:
 3. [Creating a simple in-memory data store](#creating-a-simple-in-memory-data-store)
 4. [Setting up ExpressJS app](#setting-up-expressjs-app)
 5. [Setting up routes](#setting-up-routes)
-6. Creating route and view for meetings
+6. [Creating user dashboards](#creating-user-dashboards)
+6. Creating and joining meetings
 7. Generating dynamic rooms using Video Embeds
 8. Creating script for launching server
 
@@ -223,6 +224,35 @@ module.exports = router;
 
 This loads 3 other files in the `routes/` directory - `setup_route.js`, `dashboard_route.js` and `meetings_route.js`.
 
+### Homepage view
+
+Let's create our first view - a rather simple view for the homepage. This view will only contain links to enter dashboards for doctor and patient, and a link to set up video embed code.
+
+Create file `views/home.ejs`. EJS templates use `.ejs` file extension by default. Add this HTML to `views/home.ejs`
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Set up OpenTok Video embed code</title>
+</head>
+
+<body>
+  <div>
+    <a href="dashboard/doctor">Enter as Doctor</a>
+  </div>
+
+  <div>
+    <a href="dashboard/patient">Enter as Patient</a>
+  </div>
+
+  <div>
+    <a href="/setup">Setup/Update embed code</a>
+  </div>
+</body>
+</html>
+```
+
 ### Routes for adding OpenTok Video Embed code
 
 Create file `routes/setup_route.js`. This file manages routes for a form that saves OpenTok Video Embed code in the in-memory database.
@@ -247,7 +277,7 @@ router.post('/', (req, res) => {
 module.exports = router;
 ```
 
-Create the view file for this route: `views/setup.ejs`. EJS templates use `.ejs` file extension by default. Add this HTML content to the file:
+Create the view file for this route: `views/setup.ejs`. Add this HTML content to the file:
 
 ```html
 <!doctype html>
@@ -276,4 +306,77 @@ Create the view file for this route: `views/setup.ejs`. EJS templates use `.ejs`
   </form>
 </body>
 </html>
+```
+
+## Creating user dashboards
+
+The dashboard route manages routes for both patients' and doctors' dashboards. Create file `routes/dashboard_route.js` and add this code in it:
+
+```js
+const router = require('express').Router();
+
+/**
+ * Doctor's dashboard
+ */
+router.get('/doctor', (req, res) => {
+  res.locals.user = { role: 'Doctor' };
+  // Render view with meetings that have a future end time
+  res.render('dashboard_doctor', { meetings: DB.meetings_filter() })
+});
+
+/**
+ * Patient's dashboard
+ */
+router.get('/patient', (req, res) => {
+  res.locals.user = { role: 'Patient' };
+  // Render view only with meetings that were booked and have future end time
+  res.render('dashboard_patient', { meetings: DB.meetings_filter(true) });
+});
+
+module.exports = router;
+```
+
+### `DB.meetings_filter()` method
+
+Notice the use of `DB.meetings_filter()` method in the previous example. We need a method to filter existing meetings in the database so that we can keep our router code DRY. We hadn't created it earlier, so let's add it now. Edit `db.js` and add this method before the line with `module.exports`:
+
+```js
+// db.js
+
+// Sort a given array of meetings by their start time in ascending order.
+// When using an actual database, you would use the database's ordering methods
+let sort = m_list => {
+  return m_list.sort(function (a, b) {
+    return a.start_time > b.start_time;
+  });
+}
+
+/**
+ * Filters through given list of meetings and split it into upcoming and current meetings based on time.
+ *
+ * @param {null|boolean} is_booked - If `null` or `undefined`, filter on all items in `mlist`. If true, filter only on
+ * meetings that are booked. If false, filter only on meetings that have not been booked.
+ * @return {object} Object containing `upcoming` and `current` meetings
+ */
+DB.meetings_filter = function (is_booked=null) {
+  const currtime = Date.now();
+  let mlist;
+
+  if (is_booked != null) {
+    if (is_booked) {
+      mlist = () => this.meetings.filter(m => m.booked);
+    } else {
+      mlist = () => this.meetings.filter(m => !m.booked);
+    }
+  } else {
+    mlist = () => this.meetings;
+  }
+
+  return {
+    // Starting after 5 minutes
+    upcoming: sort(mlist().filter(i => i.start_time.getTime() >= currtime + 300000 )),
+    // Starting in 5 minutes or has already started but not ended
+    current: sort(mlist().filter(i => i.start_time.getTime() < currtime + 300000 && i.end_time.getTime() >= currtime))
+  }
+};
 ```

@@ -21,7 +21,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 
 # Overview
 
-OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with scheduled meetings between one "doctor" and one "patient".
+OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto 3 participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with scheduled meetings between one "doctor" and one "patient".
 
 This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
 
@@ -84,7 +84,7 @@ This will create the directory structure we will use for the project and initiat
 Then, install the required NodeJS module dependencies:
 
 ```sh
-$ npm install --save express ejs sequelize pg pg-hstore express-session body-parser cookie-parser
+$ npm install --save express ejs express-session body-parser cookie-parser
 ```
 
 **Note:** The rest of the tutorial contains relevant code sections for each file. For full code, go through the entire file in the repository.

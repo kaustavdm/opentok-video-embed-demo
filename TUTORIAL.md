@@ -141,3 +141,56 @@ const app = express();
 // view engine setup
 app.set('view engine', 'ejs');
 ```
+
+Add code to enable `body-parser` middleware to parse HTTP request body data. We need this to process form data. In `app.js`, add these lines:
+
+```js
+// Set up body-parser to parse request body. Used for form data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+```
+
+Next, add middleware to programmatically load UI scripts and stylesheets in views, and set an ExpressJS response property to pass user data to views:
+
+```js
+// Set up middleware
+app.use((req, res, next) => {
+  // Add method for adding static assets
+  res.locals.assets = {
+    // JavaScripts. Relative to `./static/js`
+    scripts: ['ui.js'],
+    // CSS. Relative to `./static/css`
+    styles: ['ui.css']
+  }
+  // Add empty user object for views
+  res.locals.user = false;
+  next();
+});
+```
+
+Once these are done, add routes for express. First, mount the `./static/` directory on web root and then load the `./routes/` module (details on `./routes` module in the next section):
+
+```js
+// Mount routes
+app.use(express.static(path.join(__dirname, 'static')));
+app.use('/', require('./routes'));
+```
+
+Finally, add a catchall middleware to trap errors in routes and export the `app` instance:
+
+```js
+// error handler
+// no stacktraces leaked to user unless in development environment
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  if (!err.status || err.status !== 404) {
+    debug(err);
+  }
+  res.render('error', {
+    message: err.message
+  });
+});
+
+// Export `app`
+module.exports = app;
+```

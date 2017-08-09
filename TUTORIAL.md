@@ -490,3 +490,54 @@ Next, we'll show upcoming meetings - meetings that don't start in 5 minutes. The
 </body>
 </html>
 ```
+
+### Patient's dashboard
+
+Template logic and layout for Patient's dashboard is quite similar to Doctor's dashboard. The only difference is that Patient is asked to book a meeting if they don't have any meeting booked and Patient is only shown meetings that Patient has booked.
+
+Create file `views/dashboard_patient.ejs` and add this content:
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Patient's dashboard</title>
+</head>
+
+<body>
+  <div>
+    <h2>Patient Dashboard</h2>
+    <a href="/meetings/book">+ Book meeting slot</a>
+  </div>
+
+  <% if (meetings.current.length > 0) { %>
+  <h3>Current meeting</h3>
+  <div>
+    <% for (var m of meetings.current) { %>
+      <div>
+        <time><%= m.start_time %><time> -
+        <a class="button" href="/meetings/join/<%= m.id %>">Join meeting</a>
+      </div>
+    <% } %>
+  </div>
+  <% } %>
+
+  <h2>Upcoming meetings</h2>
+
+  <% if (meetings.upcoming.length > 0) { %>
+    <div class="column meeting-strip">
+      <% for (var m of meetings.upcoming) { %>
+        <div>
+          <time><%= m.start_time %></time>
+        </div>
+      <% } %>
+    </div>
+  <% } else { %>
+
+  <p>You don't have any upcoming meetings. You can <a href="/meetings/book">book a meeting</a>.</p>
+
+  <% } %>
+
+</body>
+</html>
+```

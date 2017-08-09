@@ -10,15 +10,42 @@ This demo does not require using any of OpenTok SDK. It only requires code snipp
 
 This tutorial will cover:
 
-1. [Requirements](#requirements)
-2. [Setting up development environment and dependencies](#setting-up-development-enviroment-and-dependencies)
-3. [Creating a simple in-memory data store](#creating-a-simple-in-memory-data-store)
-4. [Setting up ExpressJS app](#setting-up-expressjs-app)
-5. [Setting up routes](#setting-up-routes)
-6. [Creating user dashboards](#creating-user-dashboards)
-6. Creating and joining meetings
-7. Generating dynamic rooms using Video Embeds
-8. Creating script for launching server
+1. [Workflow](#workflow)
+2. [Requirements](#requirements)
+3. [Setting up development environment and dependencies](#setting-up-development-enviroment-and-dependencies)
+4. [Creating a simple in-memory data store](#creating-a-simple-in-memory-data-store)
+5. [Setting up ExpressJS app](#setting-up-expressjs-app)
+6. [Setting up routes](#setting-up-routes)
+7. [Creating user dashboards](#creating-user-dashboards)
+8. Creating and joining meetings
+9. Generating dynamic rooms using Video Embeds
+10. Creating script for launching server
+
+## Workflow
+
+This tutorial is modelled after a basic telehealth use case, with patients meeeting doctors online. The same overall method can be applied to other one-to-one use cases, like tutor:student or agent:customer.
+
+To keep things simple, this tutorial will assume there is only one doctor and one patient and not build any user authentication system. Here is the workflow we will build in this tutorial
+
+### Doctor workflow
+
+- Enter as Doctor
+- Creates meetings for the times when they are available
+- Doctor's dashboard shows upcoming meeetings
+- When a meeting is about to start, it will show up as "Current Meeting"
+- Doctor can click on corresponding meeting link to join the meeting.
+- Once on the meeting page, doctor clicks "Start Call" button to join.
+- Once call duration is over, page reloads mentioning meeting is over.
+
+### Patient workflow
+
+- Enter as Patient
+- Searches for available appointment slots and books the one that they want.
+- Patient's dashboard shows upcoming meeetings
+- When a meeting is about to start, it will show up as "Current Meeting"
+- Patient can click on corresponding meeting link to join the meeting.
+- Once on the meeting page, patient clicks "Start Call" button to join.
+- Once call duration is over, page reloads mentioning meeting is over.
 
 ## Requirements
 
@@ -66,6 +93,17 @@ Now we are all set to start writing some code.
 
 ## Creating a simple in-memory data store
 
+Each meeting entry will use this data structure:
+
+```js
+{
+  id: number, // Auto-incremented ID of the meeting, used as unique key when joining meetings
+  start_time: Date, // Start time of the meeting
+  end_time: Date, // End time of the meeting
+  booked: false // Set to `true` if patient has booked this meeeting
+}
+```
+
 Create a file called `db.js` in the project root. This file will hold a simple data structure that we will use to store application data in memory.
 
 Add the following code to the file:
@@ -74,7 +112,7 @@ Add the following code to the file:
 // This is our simple DB in memory. A real-world use case would use an actual database.
 let DB = {
 
-  // Used to store meeting information
+  // Used to store an array of meetings created by Doctor
   meetings: [],
 
   // Used to store embed code

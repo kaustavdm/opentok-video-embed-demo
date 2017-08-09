@@ -55,7 +55,7 @@ To complete this tutorial, you will need:
 - An [OpenTok Video Embed](https://tokbox.com/developer/embeds/) code - Follow the instructions on the OpenTok Video Embed page to create a Video Embed and copy the generated code. We'll need this once we have launched the application.
 - A text editor.
 
-The application server uses [ExpressJS](http://expressjs.com/) framework to create routes and serve views written in [ejs](http://ejs.co/) templating language.
+The application server uses [ExpressJS](http://expressjs.com/) framework to create routes and serve views written in [ejs](http://ejs.co/) templating language. The page for creating meeting uses [Flatpickr](https://chmln.github.io/flatpickr/) to handle date-time input.
 
 ## Setting up development enviroment and dependencies
 
@@ -65,6 +65,8 @@ This project will use a directory structure like this:
 /bin/ - Scripts to launch the application
 /routes/ - Handles application URL routes
 /static/ - Mounted statically on web root
+  - css/ - Contains CSS files
+  - js/ - Contains JavaScript files for frontend
 /views/ - Contains views served by routes.
 ```
 
@@ -73,6 +75,7 @@ Create a new directory called "opentok-video-embed-demo" and create the director
 ```sh
 $ mkdir -p opentok-video-embed-demo/{bin,routes,static,views}
 $ cd opentok-video-embed-demo
+$ mkdir -p static/{css,js}
 ```
 
 Next, initiate a `npm` project. This will create a `package.json` file with default values:
@@ -88,6 +91,10 @@ Then, install the required NodeJS module dependencies:
 ```sh
 $ npm install --save express ejs express-session body-parser cookie-parser
 ```
+
+[Download Flatpickr](https://github.com/chmln/flatpickr/archive/v3.0.7.zip), extract the zip file and copy the following files over:
+ - copy `dist/flatpickr.min.js` to `./static/js/flatpickr.min.js`
+ - copy `dist/flatpickr.min.css` to `./static/css/flatpickr.min.css`
 
 Now we are all set to start writing some code.
 
@@ -603,5 +610,71 @@ router.post('/book', (req, res, next) => {
   DB.meetings_put(m);
   // Redirect to patient's dashboard
   res.redirect('/dashboard/patient');
+});
+```
+
+Finally, export the `router` object:
+
+```js
+module.exports = router;
+```
+
+`routes/meetings_route.js` should now have necessary routes for displaying and processing forms for creating meetings and booking meetings. Let's create the two views required for these.
+
+### View for creating meeting
+
+Create file `views/create_meeting.ejs` with the following content:
+
+```html
+<!doctype html>
+<html>
+<head>
+  <title>Create meeting slot</title>
+  <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css">
+</head>
+
+<body>
+  <h2>Create meeting slot</h2>
+
+  <p>Meeting slots that you create here can be booked by patients.</p>
+
+  <form method="POST">
+
+    <div>
+      <label for="field-start_date">Start date and time</label>
+      <input id="field-start_date" type="date" class="start_date_input" autocomplete="off" name="start_date" maxlength="64" autofocus required>
+    </div>
+
+    <div>
+      <label for="field-duration">Duration (minutes)</label>
+      <input id="field-duration" type="number" autocomplete="off" name="duration" maxlength="2" required value="15">
+    </div>
+
+    <div>
+      <input type="submit" value="Create">
+      <a href="/dashboard/doctor">Cancel</a>
+    </div>
+
+  </form>
+  <script src="/js/flatpickr.min.js"></script>
+  <script src="/js/scheduling_ui.js"></script>
+</body>
+</html>
+```
+
+We need to create the script for scheduling UI. Create file `./static/js/scheduling_ui.js` with the following content to activate `flatpickr` on the input field:
+
+```js
+/* global flatpickr */
+
+window.addEventListener('load', function () {
+  flatpickr('.start_date_input', {
+    // Enable date+time input
+    enableTime: true,
+    // Set default date in input to 5 minutes in future
+    defaultDate: new Date(Date.now() + 300000),
+    // Set minimum date in input to 1 minute in future
+    minDate: new Date(Date.now() + 60000)
+  });
 });
 ```

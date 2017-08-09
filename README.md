@@ -21,7 +21,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 
 # Overview
 
-OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with a simple appointment flow.
+OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto 3 participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with a simple appointment flow.
 
 This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
 

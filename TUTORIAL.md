@@ -10,10 +10,10 @@ This demo does not require using any of OpenTok SDK. It only requires code snipp
 
 This tutorial will cover:
 
-1. Requirements
-2. Setting up development environment and dependencies
-3. Creating a simple in-memory data store
-4. Setting up ExpressJS app
+1. [Requirements](#requirements)
+2. [Setting up development environment and dependencies](#setting-up-development-enviroment-and-dependencies)
+3. [Creating a simple in-memory data store](#creating-a-simple-in-memory-data-store)
+4. [Setting up ExpressJS app](#setting-up-expressjs-app)
 5. Setting up routes
 6. Creating route and view for meetings
 7. Generating dynamic rooms using Video Embeds

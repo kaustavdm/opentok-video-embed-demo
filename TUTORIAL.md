@@ -19,7 +19,8 @@ This tutorial will cover:
 7. [Creating user dashboards](#creating-user-dashboards)
 8. [Creating and booking meetings](#creating-and-booking-meetings)
 9. [Generating dynamic rooms using Video Embeds](#generating-dynamic-rooms-using-video-embeds)
-10. Creating script for launching server
+10. [Creating script for launching server](#creating-script-for-launching-server)
+11. [Next steps](#next-steps)
 
 ## Workflow
 
@@ -175,9 +176,6 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 
-// Create a nice little replacement for `console.log`
-const debug = require('util').debuglog('app');
-
 // Expose in-memory DB as `global`.
 global.DB = require('./db');
 
@@ -212,7 +210,7 @@ Finally, add a catchall middleware to trap errors in routes and export the `app`
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   if (!err.status || err.status !== 404) {
-    debug(err);
+    console.log(err);
   }
   res.render('error', {
     message: err.message
@@ -814,4 +812,62 @@ The `<script>` section of the view prints a message using `setInterval` every mi
 
 Now, the only thing left is to bootstrap our `app` and launch a HTTP server.
 
+## Creating script for launching server
 
+Create file `./bin/www` and add this content:
+
+```js
+#!/usr/bin/env node
+
+/**
+ * Bootstraps and launches app listening on specified HTTP port
+ */
+
+const app = require('../app');
+const http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+const port = process.env.PORT || '3000';
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+const server = http.createServer(app);
+
+server.listen(port);
+server.on('listening', () => {
+  console.log('Listening on port ' + port);
+});
+```
+
+This will load ExpressJS `app` instance exported from `app.js` and launch it using a HTTP server. By default, it uses port `3000`, but it can be modified by specifying `PORT` environment variable.
+
+### Launch the application
+
+Now, you can launch the application from the project root. Run:
+
+```sh
+$ node ./bin/www
+```
+
+Open the browser and point to http://localhost:3000.
+
+To run on a different port, say `8080`, run:
+
+```sh
+$ PORT=8080 node ./bin/www
+```
+
+## Next steps
+
+Now that the application is running, go the "Setup" page and paste in the video embed code obtained from OpenTok. Then, play around by creating a few appointments by entering in as doctor and then booking them by entering as patient (maybe, in another tab).
+
+Notes:
+
+- This tutorial did not configure SSL. WebRTC requires pages to be served over HTTPS with the exception of `http://localhost`. To set up a reverse proxy with SSL termination, see [nginx as a reverse proxy with SSL termination](https://www.sitepoint.com/configuring-nginx-ssl-node-js/).
+- This tutorial also simplified code to a large extent. You may want to add styles or better UI/UX by improving on the basic code given here.
+- OpenTok Video Embeds have their limitations. If they do not solve your use case, you should try doing a deeper integration using OpenTok SDKs. See [TokBox Developer Portal](https://tokbox.com/developer) for details.

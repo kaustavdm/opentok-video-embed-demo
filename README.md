@@ -7,6 +7,7 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 # Table of Contents
 
 - [Overview](#overview)
+- [Tutorial](#tutorial)
 - [Install](#install)
 - [Walkthrough](#walkthrough)
   - [Workflow](#workflow)
@@ -26,6 +27,10 @@ OpenTok video embeds are simple embeddable widgets that can be added to web page
 This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
 
 **Note**: This branch contains a simple version of the demo, with in-memory database. Check the [`database`](https://github.com/kaustavdm/opentok-video-embed-demo/tree/database) branch for an example and walkthrough with PostgreSQL as the database backend, basic user authentication and multiple doctor/patient support.
+
+# Tutorial
+
+**See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building such an application.**
 
 # Install
 

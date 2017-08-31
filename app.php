@@ -63,6 +63,7 @@ $app->get('/dashboard/doctor', function ($request, $response) {
     'user' => [
       'role' => 'Doctor'
     ],
+    'meetings' => $this->db->filterMeetings(),
     'title' => 'Doctor Dashboard'
   ]);
 });
@@ -75,16 +76,31 @@ $app->get('/dashboard/patient', function ($request, $response) {
     'user' => [
       'role' => 'Patient'
     ],
+    'meetings' => $this->db->filterMeetings(true),
     'title' => 'Patient Dashboard'
+  ]);
+});
+
+/**
+ * Route for creating meetings
+ */
+ $app->get('/meetings/create', function ($request, $response) {
+  return $this->view->render($response, 'meetings_create.html', [
+    'user' => [
+      'role' => 'Doctor'
+    ],
+    'title' => 'Create meeting'
   ]);
 });
 
 /**
  * Meetings create form handler
  */
-$app->post('/meetings', function ($request, $response) {
+$app->post('/meetings/create', function ($request, $response) {
   $body = $request->getParsedBody();
-  $id = $this->db->addMeeting($body['start_time'], $body['end_time']);
+  $start_time = date('c', strtotime($body['start_date']));
+  $end_time = date('c', strtotime('+' . $body['duration'] . ' minutes', strtotime($start_time)));
+  $id = $this->db->addMeeting($start_time, $end_time);
   return $response->withRedirect('/dashboard/doctor');
 });
 

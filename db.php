@@ -23,15 +23,15 @@ class DB {
 
   public function addMeeting ($start_time, $end_time, $booked = false) {
     $meetings = $this->getMeetings();
-    if (is_null($meeting)) {
+    if (is_null($meetings)) {
       return NULL;
     }
-    $id = Uuid::uuidv4()->toString();
+    $id = Uuid::uuid4()->toString();
     $meetings[$id] = array(
-      id => $id,
-      start_time => $start_time,
-      end_time => $end_time,
-      booked => $booked
+      'id' => $id,
+      'start_time' => $start_time,
+      'end_time' => $end_time,
+      'booked' => $booked
     );
     $this->db->set('meetings', json_encode($meetings));
     return $id;
@@ -40,7 +40,8 @@ class DB {
   public function getMeetings ($id = null) {
     $meetings = $this->db->get('meetings');
     if (is_null($meetings)) {
-      return NULL;
+      $this->db->set('meetings', json_encode([]));
+      return [];
     }
     $meetings_obj = json_decode($meetings, true);
     if (is_null($id)) {
@@ -57,6 +58,42 @@ class DB {
     $meetings[$id]['booked'] = true;
     $this->db->set('meetings', json_encode($meetings));
     return true;
+  }
+
+  public function filterMeetings ($is_booked = null) {
+    $meetings = $this->getMeetings();
+    $now = strtotime('now');
+    $upcoming = array_filter($meetings, function ($v) use ($now, $is_booked) {
+      $start_time = strtotime($v['start_time']);
+      if (is_null($is_booked)) {
+        if ($start_time >= $now + 300) {
+          return true;
+        }
+      } else {
+        if ($start_time >= $now + 300 && $v['booked'] == $is_booked) {
+          return true;
+        }
+      }
+      return false;
+    });
+    $current = array_filter($meetings, function ($v) use ($now, $is_booked) {
+      $start_time = strtotime($v['start_time']);
+      $end_time = strtotime($v['end_time']);
+      if (is_null($is_booked)) {
+        if ($end_time > $now && $start_time < $now + 300) {
+          return true;
+        }
+      } else {
+        if ($end_time > $now && $start_time < $now + 300 && $v['booked'] == $is_booked) {
+          return true;
+        }
+      }
+      return false;
+    });
+    return [
+      'upcoming' => $upcoming,
+      'current' => $current
+    ];
   }
 
   public function setEmbedCode ($code) {

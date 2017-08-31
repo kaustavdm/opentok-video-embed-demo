@@ -37,13 +37,21 @@ class DB {
     return $id;
   }
 
-  public function getMeetings ($id = null) {
+  public function getMeetings ($id = null, $is_booked = null) {
     $meetings = $this->db->get('meetings');
     if (is_null($meetings)) {
       $this->db->set('meetings', json_encode([]));
       return [];
     }
     $meetings_obj = json_decode($meetings, true);
+    if (!is_null($is_booked)) {
+      $meetings_obj = array_filter($meetings_obj, function ($v) use ($is_booked) {
+        return $v['booked'] == $is_booked;
+      });
+    }
+    $meetings_obj = array_filter($meetings_obj, function ($v) {
+      return strtotime($v['end_time']) > strtotime('now');
+    });
     if (is_null($id)) {
       return $meetings_obj;
     }

@@ -1,0 +1,23 @@
+{
+  "buildpacks": [],
+  "env": {
+    "LOCK_SETUP": {
+      "description": "Lock updating of OpenTok embed code once it has been set. Set to 'true' to enable lock",
+      "value": "false",
+      "required": false
+    },
+    "NODE_ENV": {
+      "description": "Run as a production environment on Heroku",
+      "value": "production",
+      "required": false
+    },
+    "NODE_DEBUG": {
+      "description": "Enable debug for modules",
+      "value": "app",
+      "required": false
+    }
+  },
+  "formation": {},
+  "name": "ot-embed-appointment-demo",
+  "scripts": {}
+}

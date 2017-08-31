@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row">
+    <h2>Your meetings</h2>
+    <a class="button pull-right" href="/meetings/create">+ Add meeting slot</a>
+  </div>
+
+  {% if meetings.current|length > 0 %}
+  <h3>Current meeting</h3>
+  <div class="column meeting-strip">
+    {% for m in meetings.current %}
+      {% if m.booked %}
+        <div class="row meeting-item">
+          <div class="meeting-item-time grow"><time>{{ m.start_time }}</time></div>
+          <div class="pull-right"><a class="button" href="/meetings/join/{{ m.id }}">Join meeting</a></div>
+        </div>
+      {% else %}
+        <div class="row meeting-item unclaimed">
+          <div class="meeting-item-time grow"><time>{{ m.start_time }}</time></div>
+          <div><span class="button secondary disabled">Unclaimed</span></div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
+  <h3>Upcoming meetings</h3>
+
+  {% if meetings.upcoming|length > 0 %}
+    <div class="column meeting-strip">
+      {% for m in meetings.upcoming  %}
+        {% if m.booked %}
+          <div class="row meeting-item">
+            <div class="meeting-item-time grow"><time>{{ m.start_time }}</time></div>
+            <div><span class="button disabled">Booked</span></div>
+          </div>
+        {% else %}
+          <div class="row meeting-item unclaimed">
+            <div class="meeting-item-time grow"><time>{{ m.start_time }}<time></div>
+            <div><span class="button secondary disabled">Unclaimed</span></div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>You don't have any upcoming meetings. You can <a href="/meetings/create">create a meeting</a>.</p>
+  {% endif %}
+
+
+{% endblock %}

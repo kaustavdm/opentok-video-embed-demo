@@ -33,25 +33,27 @@ class DB {
       'end_time' => $end_time,
       'booked' => $booked
     );
+    $now = strtotime('now');
+    $meetings = array_filter($meetings, function ($v) use ($now) {
+      if (strtotime($v['end_time']) < $now) {
+        return false;
+      }
+      return true;
+    });
+    uasort($meetings, function($a, $b) {
+      return strtotime($a['start_time']) - strtotime($b['start_time']);
+    });
     $this->db->set('meetings', json_encode($meetings));
     return $id;
   }
 
-  public function getMeetings ($id = null, $is_booked = null) {
+  public function getMeetings ($id = null) {
     $meetings = $this->db->get('meetings');
     if (is_null($meetings)) {
       $this->db->set('meetings', json_encode([]));
-      return [];
+      return array();
     }
     $meetings_obj = json_decode($meetings, true);
-    if (!is_null($is_booked)) {
-      $meetings_obj = array_filter($meetings_obj, function ($v) use ($is_booked) {
-        return $v['booked'] == $is_booked;
-      });
-    }
-    $meetings_obj = array_filter($meetings_obj, function ($v) {
-      return strtotime($v['end_time']) > strtotime('now');
-    });
     if (is_null($id)) {
       return $meetings_obj;
     }
@@ -60,9 +62,10 @@ class DB {
 
   public function bookMeeting ($id) {
     $meetings = $this->getMeetings();
-    if (is_null($meeting)) {
+    if (is_null($meetings)) {
       return NULL;
     }
+    $meeting = $meetings[$id];
     $meetings[$id]['booked'] = true;
     $this->db->set('meetings', json_encode($meetings));
     return true;

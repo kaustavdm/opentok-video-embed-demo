@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -rf cache/_views
+
+php -S localhost:8080 -t public

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h2>Book meeting slots</h2>
+
+    {% for m in meetings %}
+    <div class="row meeting-item">
+        <div class="meeting-item-time grow"><time>{{ m.start_time }}</time></div>
+        <div>
+        <form method="POST">
+            <input type="hidden" name="meeting_id" value="{{ m.id }}">
+            <input type="submit" value="Book">
+        </form>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if meetings|length < 1 %}
+    <p>No meetings available.</p>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+<script src="/js/ui.js" type="text/javascript"></script>
+{% endblock %}

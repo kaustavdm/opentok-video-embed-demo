@@ -98,10 +98,33 @@ $app->get('/dashboard/patient', function ($request, $response) {
  */
 $app->post('/meetings/create', function ($request, $response) {
   $body = $request->getParsedBody();
-  $start_time = date('c', strtotime($body['start_date']));
-  $end_time = date('c', strtotime('+' . $body['duration'] . ' minutes', strtotime($start_time)));
-  $id = $this->db->addMeeting($start_time, $end_time);
+  $start_time = strtotime($body['start_date']);
+  $end_time = $start_time + ((int)$body['duration'] * 60);
+  $id = $this->db->addMeeting(date('c', $start_time), date('c', $end_time));
   return $response->withRedirect('/dashboard/doctor');
+});
+
+/**
+ * Route for booking meetings
+ */
+ $app->get('/meetings/book', function ($request, $response) {
+  $meetings = $this->db->filterMeetings(false);
+  return $this->view->render($response, 'meetings_book.html', [
+    'user' => [
+      'role' => 'Patient'
+    ],
+    'meetings' => array_merge($meetings['current'], $meetings['upcoming']),
+    'title' => 'Book meeting'
+  ]);
+});
+
+/**
+ * Meetings create form handler
+ */
+ $app->post('/meetings/book', function ($request, $response) {
+  $body = $request->getParsedBody();
+  $done = $this->db->bookMeeting($body['meeting_id']);
+  return $response->withRedirect('/dashboard/patient');
 });
 
 $app->run();

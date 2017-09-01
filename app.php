@@ -107,7 +107,7 @@ $app->post('/meetings/create', function ($request, $response) {
 /**
  * Route for booking meetings
  */
- $app->get('/meetings/book', function ($request, $response) {
+$app->get('/meetings/book', function ($request, $response) {
   $meetings = $this->db->filterMeetings(false);
   return $this->view->render($response, 'meetings_book.html', [
     'user' => [
@@ -121,10 +121,30 @@ $app->post('/meetings/create', function ($request, $response) {
 /**
  * Meetings create form handler
  */
- $app->post('/meetings/book', function ($request, $response) {
+$app->post('/meetings/book', function ($request, $response) {
   $body = $request->getParsedBody();
   $done = $this->db->bookMeeting($body['meeting_id']);
   return $response->withRedirect('/dashboard/patient');
+});
+
+/**
+ * Meeting view
+ */
+$app->get('/meetings/join/{id}', function ($request, $response, $args) {
+  $embed_code = $this->db->getEmbedCode();
+  if (is_null($embed_code)) {
+    return $response->withRedirect('/setup');
+  }
+  $meeting = $this->db->getMeetings($args['id']);
+  if (is_null($meeting)) {
+    return $response->withStatus(404)->write('Meeting not found');
+  }
+  return $this->view->render($response, 'meeting.html', [
+    'title' => 'Meeting',
+    'meeting' => $meeting,
+    'meeting_over' => strtotime($meeting['end_time']) < strtotime('now'),
+    'embed_code' => str_replace('DEFAULT_ROOM', $meeting['id'], $embed_code)
+  ]);
 });
 
 $app->run();

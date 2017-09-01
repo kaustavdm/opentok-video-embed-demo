@@ -57,7 +57,10 @@ class DB {
     if (is_null($id)) {
       return $meetings_obj;
     }
-    return $meetings_obj[$id];
+    if (isset($meetings_obj[$id])) {
+      return $meetings_obj[$id];
+    }
+    return NULL;
   }
 
   public function bookMeeting ($id) {

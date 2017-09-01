@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+{% if meeting_over == false %}
+    <div class="row space-between">
+      <div>Start: <time>{{ meeting.start_time }}</time></div>
+      <div id="message"></div>
+      <div>End: <time>{{ meeting.end_time }}</time></div>
+    </div>
+    <div id="ot_embed_demo_container">{{ embed_code|raw }}</div>
+    <div class="text-center">
+      <p><a class="button primary" href="/">Exit</a></p>
+    </div>
+    <script>
+      window.addEventListener('load', function () {
+        var message_container = document.getElementById('message');
+        var end_time = Date.parse("{{ meeting.end_time }}");
+        var time_left = end_time - Date.now();
+        var update_time_remaining = function () {
+          var remaining = Math.round((end_time - Date.now()) / 60000);
+          message_container.innerHTML = '<p><strong>Time left: ' + remaining + ' minute(s).</strong></p>';
+        };
+        update_time_remaining();
+        setInterval(update_time_remaining, 60000);
+        setTimeout(function () {
+          window.location.reload();
+        }, time_left);
+      });
+    </script>
+{% else %}
+    <p><strong>Meeting is over.</strong></p>
+    <p><a href="/" class="button">Exit</a></p>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script src="/js/ui.js" type="text/javascript"></script>
+{% endblock %}

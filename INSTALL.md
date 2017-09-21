@@ -50,7 +50,7 @@ $ PORT=8080 npm start
 
 ### Setting up SSL
 
-WebRTC requires web applications to be served over a secure channel so this application needs to be hosted on HTTPS to participate in meetings. Since Heroku serves all applications on HTTPS, you don't need to worry about this if deploying to Heroku. Otherwise, consider setting up [nginx as a reverse proxy with SSL termination](https://www.sitepoint.com/configuring-nginx-ssl-node-js/).
+WebRTC requires web applications to be served over a secure channel so we will host this application  over HTTPS. We recommend using Heroku because it serves all applications over HTTPS. Alternatively, you can set up [nginx as a reverse proxy with SSL termination](https://www.sitepoint.com/configuring-nginx-ssl-node-js/).
 
 ### Debug
 

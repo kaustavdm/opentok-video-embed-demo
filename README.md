@@ -1,8 +1,8 @@
-# OpenTok Embed appointment demo
+# OpenTok Embed Appointment Demo
 
-A small demo application demonstrating usage of [OpenTok video embeds](https://tokbox.com/developer/embeds/) in appointments.
+A demo application that uses [OpenTok Video Embeds](https://tokbox.com/developer/embeds/) for appointments.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/opentok-video-embed-demo/tree/master)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/opentok/opentok-video-embed-demo/tree/master)
 
 # Table of Contents
 
@@ -22,15 +22,13 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 
 # Overview
 
-OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto 3 participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with scheduled meetings between one "doctor" and one "patient".
+OpenTok Video Chat Embeds are embeddable widgets that can be added to web pages using iFrames or JavaScript. The video embeds can power a video chat conference for up to 3 participants along with support for dynamic rooms. This makes it ideal for getting started without requiring an OpenTok SDK.
 
-This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
-
-**Note**: This branch contains a simple version of the demo, with in-memory database. Check the [`database`](https://github.com/kaustavdm/opentok-video-embed-demo/tree/database) branch for an example and walkthrough with PostgreSQL as the database backend, basic user authentication and multiple doctor/patient support.
+This demo application demonstrates the use of dynamic embed rooms along with scheduled meetings between a "doctor" and a "patient". However, this can be applied to any 1:1 scenario such as "teacher":"student" and "representative":"client".
 
 # Tutorial
 
-**See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building such an application.**
+**See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building the application.**
 
 # Install
 
@@ -40,33 +38,9 @@ This demo does not require using any of OpenTok SDKs because all it uses are cod
 
 # Walkthrough
 
-This is a step-by-step walkthrough of building the demo, highlighting the important pieces.
+This is a step-by-step walkthrough of building the demo embed application, highlighting the key pieces.
 
-## Workflow
-
-This sample application is modelled after a basic telehealth use case, with patients meeeting doctors online. The same can be edited and applied to other similar 1:1 use cases, like tutor:student or agent:customer.
-
-In this example, a doctor can create meetings for time slots when they are available. Patients can then find and book an available appointment. At the time of the appointment, patients and doctors are connected together to a meeting room. The meeting room loads an existing OpenTok embed code with a custom room name, ensuring each meeting happens in a different room.
-
-### Doctor workflow
-
-- Enter as Doctor
-- Creates meetings for the times when they are available
-- Doctor's dashboard shows upcoming meeetings
-- Doctor can click on corresponding meeting link to join the meeting.
-- Once on the meeting page, doctor clicks "Start Call" button to join.
-- Once call duration is over, page reloads mentioning meeting is over.
-
-### Patient workflow
-
-- Enter as Patient
-- Searches for available appointment slots and books the one that they want.
-- Patient's dashboard shows upcoming meeetings
-- Patient can click on corresponding meeting link to join the meeting.
-- Once on the meeting page, patient clicks "Start Call" button to join.
-- Once call duration is over, page reloads mentioning meeting is over.
-
-## Tech dependencies
+## Dependencies
 
 - Application backend: [NodeJS 6.9+](http://nodejs.org)
     - Routing framework: [ExpressJS](http://expressjs.com/)
@@ -96,7 +70,7 @@ $ npm install --save express ejs express-session body-parser cookie-parser
 
 ## Data store
 
-This demo stores everything in memory to make things simple. The [`db.js`](db.js) script exports an object, `DB`, which stores meetings and embed code and gives few useful methods to query the `meetings` array.
+This demo stores everything in memory to keep things simple. The [`db.js`](db.js) script exports an object, `DB`, which stores meetings and embed code and gives few useful methods to query the `meetings` array.
 
 [`app.js`](app.js) adds the `DB` object to `global` scope so that the rest of the application can access it.
 
@@ -114,18 +88,18 @@ let DB = {
 };
 ```
 
-Each meeting entry in `DB.meetings[]` uses this data structure:
+Each meeting entry in `DB.meetings[]` is an object:
 
 ```js
 {
-  id: number,
+  id: integer,
   start_time: Date,
   end_time: Date,
   booked: false
 }
 ```
 
-When a patient books a meeting the `booked` property is set to `true`. This is how a sample meeting entry looks like:
+When a patient books a meeting the `booked` property is set to `true`. Ex:
 
 ```
 {
@@ -140,7 +114,7 @@ When a patient books a meeting the `booked` property is set to `true`. This is h
 
 ## Setup ExpressJS app
 
-The script [`./app.js`](app.js) creates, mounts and exports an ExpressJS app instance.
+The script [`./app.js`](app.js) creates, mounts, and exports an ExpressJS app instance.
 
 ```js
 const express = require('express');
@@ -220,7 +194,7 @@ router.get('/doctor', (req, res) => {
 });
 ```
 
-The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs). This is how patient dashboard (`/dashboard/patient`) renders its view:
+The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs). This is how the patient dashboard (`/dashboard/patient`) renders its view:
 
 ```js
 /**
@@ -241,10 +215,10 @@ router.get('/patient', (req, res) => {
 
 The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting details, fetches embed code and passes these to the view for rendering.
 
-**It replaces the `room` parameter in the embed code's URL according to the meeting id. This is how the same OpenTok video embed is used for different meetings even at the same time:**
+**It replaces the `room` parameter's value in the embed code's URL according to the meeting id. This is how the same OpenTok video embed is used for different meetings even at the same time:**
 
 ```js
-// Here `req.embed_code` contains the orginal embed code obtained for an
+// Here `req.embed_code` contains the original embed code obtained for an
 // OpenTok video embed
 const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
 ```
@@ -298,3 +272,26 @@ $ node ./bin/www
 ```
 
 **Note**: This demo needs to be served over HTTPS. See [INSTALL.md](INSTALL.md) for details.
+
+
+## Workflow
+
+In this application, a doctor can create time slots when they are available and the patient can book the open time slots. At the time of the appointment, patients and doctors are connected together in a meeting room using a custom name to ensure that each meeting is happening in a separate room.
+
+### Doctor workflow
+
+- Enter as a Doctor
+- Creates meetings for the times when they are available
+- Doctor's dashboard shows upcoming meetings
+- Doctor can click on corresponding meeting link to join the meeting.
+- The doctor can join the call by clicking the "Start Call" button.
+- The page will reload once the call is over.
+
+### Patient workflow
+
+- Enter as a Patient
+- Search and book an available appointment slot
+- Patient's dashboard shows upcoming meetings
+- Patient can click on corresponding meeting link to join the meeting.
+- The patient can join the call by clicking the "Start Call" button.
+- The page will reload once the call is over.

@@ -26,6 +26,11 @@ OpenTok Video Chat Embeds are embeddable widgets that can be added to web pages 
 
 This application demonstrates the use of dynamic embed rooms for appointments between a doctor and a patient. However, you can apply this concept to any 1:1 video chatting scenario such as a teacher and student or even a sales representative and a client.
 
+
+## Workflow
+
+In this application, a doctor can create time slots when they are available and the patient can book the open time slots. At the time of the appointment, patients and doctors are connected together in a meeting room using a custom name to ensure that each meeting is happening in a separate room.
+
 # Tutorial
 
 **See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building the application.**
@@ -277,7 +282,3 @@ $ node ./bin/www
 ```
 
 **Note**: This application needs to be served over HTTPS. See [INSTALL.md](INSTALL.md) for details.
-
-## Workflow
-
-In this application, a doctor can create time slots when they are available and the patient can book the open time slots. At the time of the appointment, patients and doctors are connected together in a meeting room using a custom name to ensure that each meeting is happening in a separate room.

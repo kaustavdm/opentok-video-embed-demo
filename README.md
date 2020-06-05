@@ -79,8 +79,8 @@ $ npm install --save express ejs express-session body-parser cookie-parser
 The script [`./app.js`](app.js) creates, mounts, and exports an ExpressJS app instance.
 
 ```js
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require('express');
+const bodyParser = require('body-parser');
 
 // Create express instance
 const app = express();
@@ -90,7 +90,7 @@ Set view engine and middleware parsers:
 
 ```js
 // view engine setup
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
 
 // parse data in request body
 app.use(bodyParser.json());
@@ -101,15 +101,15 @@ Mount routes:
 
 ```js
 // Mount the `./static` directory as a static file server
-app.use(express.static(path.join(__dirname, "static")));
+app.use(express.static(path.join(__dirname, 'static')));
 // Mount the `./routes` module
-app.use("/", require("./routes"));
+app.use('/', require('./routes'));
 ```
 
 Export the `app` instance:
 
 ```js
-module.exports = app;
+module.exports = app
 ```
 
 [`app.js`](app.js) also mounts a few other utility middleware. Review the file for more details.
@@ -121,17 +121,17 @@ The [`./routes/`](routes) directory is built as a module to separate individual 
 **`routes/index.js`**:
 
 ```js
-const router = require("express").Router();
+const router = require('express').Router();
 
 // Serve `home` view. This renders `views/home.ejs`
-router.get("/", (req, res) => {
-  res.render("home");
+router.get('/', (req, res) => {
+  res.render('home');
 });
 
 // Load other routes and mount them
-router.use("/setup", require("./setup_route"));
-router.use("/dashboard", require("./dashboard_route"));
-router.use("/meetings", require("./meetings_route"));
+router.use('/setup', require('./setup_route'));
+router.use('/dashboard', require('./dashboard_route'));
+router.use('/meetings', require('./meetings_route'));
 
 module.exports = router;
 ```
@@ -147,11 +147,12 @@ This how how `DB` looks like:
 ```js
 // This is our simple DB in memory. A real-world use case would use an actual database.
 let DB = {
+
   // Used to store meeting information
   meetings: [],
 
   // Used to store embed code
-  embed_code: "",
+  embed_code: ''
 };
 ```
 
@@ -193,10 +194,10 @@ The doctor dashboard is served at `/dashboard/doctor` and its view resides in [`
 /**
  * Doctor's dashboard
  */
-router.get("/doctor", (req, res) => {
-  res.locals.user = { role: "Doctor" };
-  res.render("dashboard_doctor", {
-    meetings: DB.meetings_filter(),
+router.get('/doctor', (req, res) => {
+  res.locals.user = { role: 'Doctor' };
+  res.render('dashboard_doctor', {
+    meetings: DB.meetings_filter()
   });
 });
 ```
@@ -207,13 +208,13 @@ The patient dashboard is served at `/dashboard/patient` and its view is in [`./v
 /**
  * Patient's dashboard
  */
-router.get("/patient", (req, res) => {
+router.get('/patient', (req, res) => {
   res.locals.user = {
-    role: "Patient",
+    role: 'Patient'
   };
   // Render view only with meetings that were booked
-  res.render("dashboard_patient", {
-    meetings: DB.meetings_filter(true),
+  res.render('dashboard_patient', {
+    meetings: DB.meetings_filter(true)
   });
 });
 ```
@@ -232,7 +233,7 @@ The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting deta
 // Here `req.embed_code` contains the original embed code obtained for an
 // OpenTok video embed
 const embed_code = req.embed_code.replace(
-  "DEFAULT_ROOM",
+  'DEFAULT_ROOM',
   `meeting${meeting.id}`
 );
 ```
@@ -263,12 +264,12 @@ Setting up the `app` and `http` instances:
 ```js
 // Load dependencies, including `app.js` and the `models` module from project
 // root
-const app = require("../app");
-const http = require("http");
+const app = require('../app');
+const http = require('http');
 
 // Get port from environment and store in Express.
-const port = process.env.PORT || "3000";
-app.set("port", port);
+const port = process.env.PORT || '3000';
+app.set('port', port);
 
 // Create HTTP server.
 const server = http.createServer(app);

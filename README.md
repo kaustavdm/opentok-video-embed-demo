@@ -1,5 +1,7 @@
 # OpenTok Embed Appointment Demo
 
+<img src="https://assets.tokbox.com/img/vonage/Vonage_VideoAPI_black.svg" height="48px" alt="Tokbox is now known as Vonage" />
+
 An appointment application that uses [OpenTok Video Embeds](https://tokbox.com/developer/embeds/) to provide real-time video communication.
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/opentok/opentok-video-embed-demo/tree/master)
@@ -26,7 +28,6 @@ OpenTok Video Chat Embeds are embeddable widgets that can be added to web pages 
 
 This application demonstrates the use of dynamic embed rooms for appointments between a doctor and a patient. However, you can apply this concept to any 1:1 video chatting scenario such as a teacher and student or even a sales representative and a client.
 
-
 ## Workflow
 
 In this application, a doctor can create time slots when they are available and the patient can book the open time slots. At the time of the appointment, patients and doctors are connected together in a meeting room using a custom name to ensure that each meeting is happening in a separate room.
@@ -48,8 +49,8 @@ This step-by-step walkthrough will show you how to build this embed application 
 ## Dependencies
 
 - Application backend: [NodeJS 6.9+](http://nodejs.org)
-    - Routing framework: [ExpressJS](http://expressjs.com/)
-    - View engine: [ejs](http://ejs.co/)
+  - Routing framework: [ExpressJS](http://expressjs.com/)
+  - View engine: [ejs](http://ejs.co/)
 
 ## Initializing application
 
@@ -151,7 +152,7 @@ let DB = {
   meetings: [],
 
   // Used to store embed code
-  embed_code: ""
+  embed_code: ''
 };
 ```
 
@@ -179,7 +180,6 @@ When a patient books a meeting, the `booked` property is set to `true`. Ex:
 
 `DB` also contains a few utility methods to query and update the `DB.meetings[]` array. See [`db.js`](db.js) for the exact details.
 
-
 ### Dashboard routes
 
 There are two nearly identical dashboards in the demo, one for doctors and another for patients.
@@ -196,8 +196,8 @@ The doctor dashboard is served at `/dashboard/doctor` and its view resides in [`
  */
 router.get('/doctor', (req, res) => {
   res.locals.user = { role: 'Doctor' };
-  res.render('dashboard_doctor', { 
-    meetings: DB.meetings_filter() 
+  res.render('dashboard_doctor', {
+    meetings: DB.meetings_filter()
   });
 });
 ```
@@ -209,12 +209,12 @@ The patient dashboard is served at `/dashboard/patient` and its view is in [`./v
  * Patient's dashboard
  */
 router.get('/patient', (req, res) => {
-  res.locals.user = { 
-    role: 'Patient' 
+  res.locals.user = {
+    role: 'Patient'
   };
   // Render view only with meetings that were booked
-  res.render('dashboard_patient', { 
-    meetings: DB.meetings_filter(true) 
+  res.render('dashboard_patient', {
+    meetings: DB.meetings_filter(true)
   });
 });
 ```
@@ -232,7 +232,10 @@ The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting deta
 ```js
 // Here `req.embed_code` contains the original embed code obtained for an
 // OpenTok video embed
-const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
+const embed_code = req.embed_code.replace(
+  'DEFAULT_ROOM',
+  `meeting${meeting.id}`
+);
 ```
 
 So, this embed code:
@@ -282,3 +285,21 @@ $ node ./bin/www
 ```
 
 **Note**: This application needs to be served over HTTPS. See [INSTALL.md](INSTALL.md) for details.
+
+## Development and Contributing
+
+Interested in contributing? We :heart: pull requests! See the
+[Contribution](CONTRIBUTING.md) guidelines.
+
+## Getting Help
+
+We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
+
+- Open an issue on this repository
+- See <https://support.tokbox.com/> for support options
+- Tweet at us! We're [@VonageDev](https://twitter.com/VonageDev) on Twitter
+- Or [join the Vonage Developer Community Slack](https://developer.nexmo.com/community/slack)
+
+## Further Reading
+
+- Check out the Developer Documentation at <https://tokbox.com/developer/>

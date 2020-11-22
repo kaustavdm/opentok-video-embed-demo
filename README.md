@@ -1,8 +1,10 @@
-# OpenTok Embed appointment demo
+# OpenTok Embed Appointment Demo
 
-A small demo application demonstrating usage of [OpenTok video embeds](https://tokbox.com/developer/embeds/) in appointments.
+<img src="https://assets.tokbox.com/img/vonage/Vonage_VideoAPI_black.svg" height="48px" alt="Tokbox is now known as Vonage" />
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kaustavdm/opentok-video-embed-demo/tree/master)
+An appointment application that uses [OpenTok Video Embeds](https://tokbox.com/developer/embeds/) to provide real-time video communication.
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/opentok/opentok-video-embed-demo/tree/master)
 
 # Table of Contents
 
@@ -22,15 +24,17 @@ A small demo application demonstrating usage of [OpenTok video embeds](https://t
 
 # Overview
 
-OpenTok video embeds are simple embeddable widgets that can be added to web pages to get ready-made video conference with upto 3 participants. Embeds support dynamic rooms by changing a single URL parameter. This makes it ideal for using it in simple use cases without requiring too much programming. This demo is a small application that demonstrates using dynamic embed rooms along with scheduled meetings between one "doctor" and one "patient".
+OpenTok Video Chat Embeds are embeddable widgets that can be added to web pages using iFrames or JavaScript. You can generate rooms dynamically to allow private communication for up to three participants per room. This is ideal for getting started without using an OpenTok SDK.
 
-This demo does not require using any of OpenTok SDKs because all it uses are code snippets for OpenTok video embeds. The application is just a proof-of-concept to demonstrate that video embeds can be used for interesting purposes.
+This application demonstrates the use of dynamic embed rooms for appointments between a doctor and a patient. However, you can apply this concept to any 1:1 video chatting scenario such as a teacher and student or even a sales representative and a client.
 
-**Note**: This branch contains a simple version of the demo, with in-memory database. Check the [`database`](https://github.com/kaustavdm/opentok-video-embed-demo/tree/database) branch for an example and walkthrough with PostgreSQL as the database backend, basic user authentication and multiple doctor/patient support.
+## Workflow
+
+In this application, a doctor can create time slots when they are available and the patient can book the open time slots. At the time of the appointment, patients and doctors are connected together in a meeting room using a custom name to ensure that each meeting is happening in a separate room.
 
 # Tutorial
 
-**See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building such an application.**
+**See [TUTORIAL.md](TUTORIAL.md) for a step-by-step tutorial on building the application.**
 
 # Install
 
@@ -40,43 +44,19 @@ This demo does not require using any of OpenTok SDKs because all it uses are cod
 
 # Walkthrough
 
-This is a step-by-step walkthrough of building the demo, highlighting the important pieces.
+This step-by-step walkthrough will show you how to build this embed application while highlighting key pieces.
 
-## Workflow
-
-This sample application is modelled after a basic telehealth use case, with patients meeeting doctors online. The same can be edited and applied to other similar 1:1 use cases, like tutor:student or agent:customer.
-
-In this example, a doctor can create meetings for time slots when they are available. Patients can then find and book an available appointment. At the time of the appointment, patients and doctors are connected together to a meeting room. The meeting room loads an existing OpenTok embed code with a custom room name, ensuring each meeting happens in a different room.
-
-### Doctor workflow
-
-- Enter as Doctor
-- Creates meetings for the times when they are available
-- Doctor's dashboard shows upcoming meeetings
-- Doctor can click on corresponding meeting link to join the meeting.
-- Once on the meeting page, doctor clicks "Start Call" button to join.
-- Once call duration is over, page reloads mentioning meeting is over.
-
-### Patient workflow
-
-- Enter as Patient
-- Searches for available appointment slots and books the one that they want.
-- Patient's dashboard shows upcoming meeetings
-- Patient can click on corresponding meeting link to join the meeting.
-- Once on the meeting page, patient clicks "Start Call" button to join.
-- Once call duration is over, page reloads mentioning meeting is over.
-
-## Tech dependencies
+## Dependencies
 
 - Application backend: [NodeJS 6.9+](http://nodejs.org)
-    - Routing framework: [ExpressJS](http://expressjs.com/)
-    - View engine: [ejs](http://ejs.co/)
+  - Routing framework: [ExpressJS](http://expressjs.com/)
+  - View engine: [ejs](http://ejs.co/)
 
 ## Initializing application
 
 First up, install NodeJS and `npm`.
 
-Once all of these are ready, create a directory and initiate a `npm` project:
+Once all of these are ready, create a directory and initiate an `npm` project:
 
 ```sh
 $ mkdir -p opentok-video-embed-demo/{bin,routes,static,views}
@@ -84,63 +64,19 @@ $ cd opentok-video-embed-demo
 $ npm init -y
 ```
 
-This will create the directory structure we will use for the project and initiate a `package.json` file in the current directory with default values. Edit this file to tweak the `version` and `description` fields as needed.
+This will create a directory structure and a `package.json` file. You can edit this file to change the `description`, `version`, or any other field at any time.
 
-Then, install the required NodeJS module dependencies:
+Now, install the required NodeJS module dependencies:
 
 ```sh
 $ npm install --save express ejs express-session body-parser cookie-parser
 ```
 
-**Note:** The rest of the tutorial contains relevant code sections for each file. For full code, go through the entire file in the repository.
-
-## Data store
-
-This demo stores everything in memory to make things simple. The [`db.js`](db.js) script exports an object, `DB`, which stores meetings and embed code and gives few useful methods to query the `meetings` array.
-
-[`app.js`](app.js) adds the `DB` object to `global` scope so that the rest of the application can access it.
-
-This how how `DB` looks like:
-
-```js
-// This is our simple DB in memory. A real-world use case would use an actual database.
-let DB = {
-
-  // Used to store meeting information
-  meetings: [],
-
-  // Used to store embed code
-  embed_code: ""
-};
-```
-
-Each meeting entry in `DB.meetings[]` uses this data structure:
-
-```js
-{
-  id: number,
-  start_time: Date,
-  end_time: Date,
-  booked: false
-}
-```
-
-When a patient books a meeting the `booked` property is set to `true`. This is how a sample meeting entry looks like:
-
-```
-{
-  id: 3,
-  start_time: 2017-08-04T13:51:00.000Z,
-  end_time: 2017-08-04T14:06:00.000Z,
-  booked: false
-}
-```
-
-`DB` also exposes a few utility methods to query and update the `DB.meetings[]` array. See [`db.js`](db.js) for the code.
+**Note:** The rest of the tutorial goes over relevant code sections for each file. To see all of the code, please review each file in the repository.
 
 ## Setup ExpressJS app
 
-The script [`./app.js`](app.js) creates, mounts and exports an ExpressJS app instance.
+The script [`./app.js`](app.js) creates, mounts, and exports an ExpressJS app instance.
 
 ```js
 const express = require('express');
@@ -176,7 +112,7 @@ Export the `app` instance:
 module.exports = app
 ```
 
-[`app.js`](app.js) also mounts a few other utility middleware. Take a look at the file for details.
+[`app.js`](app.js) also mounts a few other utility middleware. Review the file for more details.
 
 ## Setup routes
 
@@ -200,15 +136,59 @@ router.use('/meetings', require('./meetings_route'));
 module.exports = router;
 ```
 
+## Storing Data
+
+This demo stores everything in memory to keep things simple. The [`db.js`](db.js) script exports an object, `DB`, which stores meetings and embed code and gives few useful methods to query the `meetings` array.
+
+[`app.js`](app.js) adds the `DB` object to `global` scope so that the rest of the application can access it.
+
+This how how `DB` looks like:
+
+```js
+// This is our simple DB in memory. A real-world use case would use an actual database.
+let DB = {
+
+  // Used to store meeting information
+  meetings: [],
+
+  // Used to store embed code
+  embed_code: ''
+};
+```
+
+Each meeting entry in `DB.meetings[]` is an object:
+
+```js
+{
+  id: integer,
+  start_time: Date,
+  end_time: Date,
+  booked: false
+}
+```
+
+When a patient books a meeting, the `booked` property is set to `true`. Ex:
+
+```
+{
+  id: 3,
+  start_time: 2017-08-04T13:51:00.000Z,
+  end_time: 2017-08-04T14:06:00.000Z,
+  booked: false
+}
+```
+
+`DB` also contains a few utility methods to query and update the `DB.meetings[]` array. See [`db.js`](db.js) for the exact details.
+
 ### Dashboard routes
 
-There are two dashboards in the demo, one for doctors and another for patients. They are almost identical with slight differences.
+There are two nearly identical dashboards in the demo, one for doctors and another for patients.
 
-Patient dashboard shows meetings that the patient has booked and links to the page for booking available meeting slots. Doctor dashboard shows upcoming appointments that the doctor has created, including the ones which haven't been booked already by any patient. There is also a link to create new meeting slots. Both of the dashboards highlight current meeting with a link to join the meeting.
+The patient dashboard shows meetings that the patient has booked and links to the pages for booking available meeting slots. The doctor dashboard shows links to create new meetings, upcoming appointments that the doctor has created, including the ones which haven't been booked by a patient. Both of the dashboards highlight current meeting with a link to join the meeting.
 
-The [`./routes/dashboard_route.js`](routes/dashboard_route.js) contains the logic for querying `DB` and rendering both dashboards.
+The [`./routes/dashboard_route.js`](routes/dashboard_route.js) contains the logic for querying `DB` and rendering for each dashboard.
 
-Doctor dashboard renders the view at [`./views/dashboard_doctor.ejs`](views/dashboard_doctor.ejs). This is how the doctor dashboard (`/dashboard/doctor/`) renders its view:
+The doctor dashboard is served at `/dashboard/doctor` and its view resides in [`./views/dashboard_doctor.ejs`](views/dashboard_doctor.ejs).
 
 ```js
 /**
@@ -216,37 +196,46 @@ Doctor dashboard renders the view at [`./views/dashboard_doctor.ejs`](views/dash
  */
 router.get('/doctor', (req, res) => {
   res.locals.user = { role: 'Doctor' };
-  res.render('dashboard_doctor', { meetings: DB.meetings_filter() })
+  res.render('dashboard_doctor', {
+    meetings: DB.meetings_filter()
+  });
 });
 ```
 
-The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs). This is how patient dashboard (`/dashboard/patient`) renders its view:
+The patient dashboard is served at `/dashboard/patient` and its view is in [`./views/dashboard_patient.ejs`](views/dashboard_patient.ejs).
 
 ```js
 /**
  * Patient's dashboard
  */
 router.get('/patient', (req, res) => {
-  res.locals.user = { role: 'Patient' };
+  res.locals.user = {
+    role: 'Patient'
+  };
   // Render view only with meetings that were booked
-  res.render('dashboard_patient', { meetings: DB.meetings_filter(true) });
+  res.render('dashboard_patient', {
+    meetings: DB.meetings_filter(true)
+  });
 });
 ```
 
 ## Meetings
 
-[`./routes/meeting_route.js`](routes/meeting_route.js) handles route for creating, booking and joining meetings. Doctors can create meetings, patients can book available meetings and either can join a meeting that has been booked.
+[`./routes/meeting_route.js`](routes/meeting_route.js) handles route for creating, booking, and joining meetings. The doctors can create meetings whereas the patients can only book available meetings.
 
 ### Generate dynamic rooms using embed
 
-The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting details, fetches embed code and passes these to the view for rendering.
+The route for joining meetings (`/meetings/join/:meeting_id`) loads meeting details, fetches the embed code, and passes these to the view for rendering.
 
-**It replaces the `room` parameter in the embed code's URL according to the meeting id. This is how the same OpenTok video embed is used for different meetings even at the same time:**
+**We replace the `room` parameter's value in the embed code's URL to the meeting_id to generate dynamic rooms:**
 
 ```js
-// Here `req.embed_code` contains the orginal embed code obtained for an
+// Here `req.embed_code` contains the original embed code obtained for an
 // OpenTok video embed
-const embed_code = req.embed_code.replace('DEFAULT_ROOM', `meeting${meeting.id}`);
+const embed_code = req.embed_code.replace(
+  'DEFAULT_ROOM',
+  `meeting${meeting.id}`
+);
 ```
 
 So, this embed code:
@@ -259,20 +248,18 @@ So, this embed code:
 becomes:
 
 ```html
-<!-- Where meeting id is 42 -->
+<!-- Where meeting_id is 42 -->
 <div id="otEmbedContainer" style="width:800px; height:640px"></div>
 <script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<embedid>&room=meeting42"></script>
 ```
 
-The view for joining meetings is at [`./views/meeting.ejs`](views/meeting.ejs). This view simply adds the resulting embed code to the output if the meeting is not yet over.
-
-This works for both `<iframe>` and JavaScript versions of the embed code.
+The view for joining meetings resides in [`./views/meeting.ejs`](views/meeting.ejs). In the example above, we used the JavaScript embed code, however, you can choose to use an iFrame.
 
 ## Server startup script
 
-The script at [`./bin/www`](bin/www) lauches the application. It loads the ExpressJS `app` and launches a `HTTP` server depending on the port configuration specified
+The script at [`./bin/www`](bin/www) starts the application by loading the ExpressJS `app` and launching an `HTTP` server on the specified port.
 
-Set up the `app` and `http` instances:
+Setting up the `app` and `http` instances:
 
 ```js
 // Load dependencies, including `app.js` and the `models` module from project
@@ -297,4 +284,22 @@ Start the application server:
 $ node ./bin/www
 ```
 
-**Note**: This demo needs to be served over HTTPS. See [INSTALL.md](INSTALL.md) for details.
+**Note**: This application needs to be served over HTTPS. See [INSTALL.md](INSTALL.md) for details.
+
+## Development and Contributing
+
+Interested in contributing? We :heart: pull requests! See the
+[Contribution](CONTRIBUTING.md) guidelines.
+
+## Getting Help
+
+We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
+
+- Open an issue on this repository
+- See <https://support.tokbox.com/> for support options
+- Tweet at us! We're [@VonageDev](https://twitter.com/VonageDev) on Twitter
+- Or [join the Vonage Developer Community Slack](https://developer.nexmo.com/community/slack)
+
+## Further Reading
+
+- Check out the Developer Documentation at <https://tokbox.com/developer/>
